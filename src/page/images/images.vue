@@ -1,7 +1,7 @@
 <template>
     <div class="autjorization">
         <div class="ctrl-block">
-            <div class="search-block">
+            <!-- <div class="search-block">
                 <el-form :inline="true" :model="searchForm" class="demo-form-inline">
                     <el-form-item label="关键词">
                         <el-input v-model="searchForm.keyword" placeholder="关键词" size="mini"></el-input>
@@ -21,9 +21,9 @@
                         <el-input v-model="searchForm[dataDemo.name]" :placeholder="dataDemo.tableTitleName" size="mini"></el-input>
                     </el-form-item>
                 </el-form>
-            </div>
+            </div> -->
             <div class="ctrl-btns">
-                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
+                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
                 <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
             </div>
         </div>
@@ -70,6 +70,8 @@
                     :on-preview="addImagePreview"
                     :on-remove="addImageRemove"
                     :file-list="addImgFileDataList"
+                    :on-success="addImageSuccess"
+                    :on-error="addImageFail"
                     multiple>
                     <i class="el-icon-plus"></i>
                 </el-upload>
@@ -259,14 +261,14 @@
                     page: this.currentPage,
                     size: this.pageSize,
                 }
-                for(let i in this.searchForm){
-                    pagePer[i] = this.searchForm[i];
-                }
+                // for(let i in this.searchForm){
+                //     pagePer[i] = this.searchForm[i];
+                // }
                 getTableDataService(pagePer).then(res => {
                     this.tableData = res.content;
                     this.totalData = res.totalElements;
-                    this.pageSize = res.size;
-                    this.currentPage = res.page;
+                    // this.pageSize = res.size;
+                    // this.currentPage = res.page;
                 })
             },
             /**

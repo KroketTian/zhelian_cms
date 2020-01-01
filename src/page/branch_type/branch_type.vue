@@ -1,18 +1,18 @@
 <template>
     <div class="autjorization">
         <div class="ctrl-block">
-            <div class="search-block">
+            <!-- <div class="search-block">
                 <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-                    <!-- <el-form-item label="关键词">
+                    <el-form-item label="关键词">
                         <el-input v-model="searchForm.keyword" placeholder="关键词" size="mini"></el-input>
-                    </el-form-item> -->
+                    </el-form-item>
                     <el-form-item v-for="dataDemo in showInSearchDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName">
                         <el-input v-model="searchForm[dataDemo.name]" :placeholder="dataDemo.tableTitleName" size="mini"></el-input>
                     </el-form-item>
                 </el-form>
-            </div>
+            </div> -->
             <div class="ctrl-btns">
-                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
+                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
                 <!-- <el-button type="primary" size="mini" @click="openAddTable">添加</el-button> -->
             </div>
         </div>
@@ -54,20 +54,20 @@
 </template>
 <script>
     import {
-        getMessagesData,
-        // addFaq,
+        getBranchTypeData,
+        addBranchType,
         getMessagesDetail,
-        // deletFaq
+        deletBranchType
     } from '@/service/getData'
     import {
         reflashAddForm
     } from '@/config/mUtils'
 
-    let getTableDataService = getMessagesData,
-        getDetailService = getMessagesDetail;
-        // addService = addFaq,
-        // editService = addFaq,
-        // deletService = deletFaq;
+    let getTableDataService = getBranchTypeData,
+        // getDetailService = getMessagesDetail;
+        addService = addBranchType,
+        editService = addBranchType,
+        deletService = deletBranchType;
     let tableDataDemo = [
         {
             name:'id',
@@ -80,81 +80,31 @@
             defaultData:'',
         },
         {
-            name:'createTime',
+            name:'title',
+            tableTitleName:'分类名',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'sort',
+            tableTitleName:'排序',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'add_time',
             tableTitleName:'创建时间',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'firstName',
-            tableTitleName:'姓氏',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'lastName',
-            tableTitleName:'名字',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'country',
-            tableTitleName:'国籍',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'companyName',
-            tableTitleName:'企业名',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'email',
-            tableTitleName:'邮箱',
             isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'phoneNum',
-            tableTitleName:'手机',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'detail',
-            tableTitleName:'备注',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
@@ -208,7 +158,7 @@
                     pagePer[i] = this.searchForm[i];
                 }
                 getTableDataService(pagePer).then(res => {
-                    this.tableData = res.content;
+                    this.tableData = res.data.list;
                     this.totalData = res.totalElements;
                     this.pageSize = res.size;
                     this.currentPage = res.page;
@@ -239,9 +189,15 @@
             },
             /**详情-打开弹窗 */
             openDetailTable(id) {
-                getDetailService(id).then(res => {
-                    this.addForm = res;
-                })
+                // getDetailService(id).then(res => {
+                //     this.addForm = res;
+                // })
+                for(let i in this.tableData){
+                    if(this.tableData[i].id == id){
+                        this.addForm = deepClone(this.tableData[i]);
+                        this.addForm.password = ''
+                    }
+                }
                 this.addMsg = '';
                 this.addDialogTitle = '详情';
                 this.addDialogVisible = true;

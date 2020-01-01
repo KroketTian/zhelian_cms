@@ -194,11 +194,13 @@ export const addUser = (user) => {
     let data = {
         username:user.username,
         realname:user.realname,
-        password:user.password,
-        auth_list:user.auth_list,
+        auth_list:user.auth,
         group_id:user.group_id,
         is_admin:user.is_admin,
         status:user.status,
+    }
+    if(user.password){
+        data.password = user.password;
     }
     if(user.id){
         data.id = user.id;
@@ -516,7 +518,7 @@ export const getImageData = (pagePer) => {
     return service({
         method: 'post',
         url: '/Admin/Ads/lists',
-        params: par
+        data: par
     })
 }
 /**添加图片 */
@@ -741,9 +743,19 @@ export const getAdData = (pagePer) => {
 export const getDesData = (pagePer) => {
     return service({
         method: 'post',
+        url: '/Admin/Portal/lists',
+        // data: {
+        //     page:pagePer.page,
+        //     pagesize:pagePer.size,
+        // }
+    })
+}/**获取文字详情 */
+export const getDesDetail = (id) => {
+    return service({
+        method: 'post',
         url: '/Admin/Portal/detail',
-        params: {
-            type:1,
+        data:{
+            id :id
         }
     })
 }
@@ -751,37 +763,91 @@ export const getDesData = (pagePer) => {
 export const addDes = (msg) => {
     let data = {
         content:msg.content,
-        type:msg.type,
+        title:msg.title,
     }
-    if(faq.id){
-        data.id = faq.id;
+    if(msg.id){
+        data.id = msg.id;
+        return service({
+            method: 'post',
+            url:'/Admin/Portal/edit',
+            data: data,
+        })
     }
     return service({
         method: 'post',
-        url:'/api/mc/v1/faqs',
-        data: JSON.stringify(data),
-        headers: {
-            "content-type": 'application/json'
-        }
+        url:'/Admin/Portal/add',
+        data: data,
     })
 }
 /**删除文字 */
 export const deletDes = (id) => {
     return service({
-        method: 'delete',
-        url: '/api/mc/v1/faqs/'+id,
+        method: 'post',
+        url: '/Admin/Portal/del',
+        data:{
+            id: id
+        }
+    })
+}
+
+/**获取网点分类列表 */
+export const getBranchTypeData = (pagePer) => {
+    return service({
+        method: 'post',
+        url: '/Admin/Category/lists',
+        data: {
+            // keyword:pagePer.keyword,
+            page:pagePer.page,
+            pagesize:pagePer.size,
+        }
+    })
+}
+/**获取网点分类详情 */
+// export const getBranchTypeDetail = (id) => {
+//     return service({
+//         method: 'get',
+//         url: '/api/mc/v1/faqs/'+id,
+//     })
+// }
+/**添加、编辑网点分类 */
+export const addBranchType = (bt) => {
+    let data = {
+        title:bt.title,
+        sort:bt.sort,
+    }
+    if(faq.id){
+        data.id = bt.id;
+        return service({
+            method: 'post',
+            url:'/Admin/category/addCate',
+            data: data,
+        })
+    }
+    return service({
+        method: 'post',
+        url:'/Admin/category/updateCate',
+        data: data,
+    })
+}
+/**删除网点分类 */
+export const deletBranchType = (id) => {
+    return service({
+        method: 'post',
+        url: '/Admin/category/del',
+        data:{
+            id: id
+        }
     })
 }
 
 /**获取司机列表 */
 export const getDriverData = (pagePer) => {
-    console.log(123)
     return service({
         method: 'post',
         url: '/Admin/User/lists',
         data: {
             phone:pagePer.phone,
-            is_driver:'1',
+            // is_driver:'1',
             page:pagePer.page,
             pagesize:pagePer.size,
         }
@@ -790,20 +856,20 @@ export const getDriverData = (pagePer) => {
 /**添加、编辑司机 */
 export const addDriver = (msg) => {
     let data = {
-        nickName:msg.nickName,
-        avatarUrl:msg.avatarUrl,
-        gender:msg.gender,
-        city:msg.city,
-        country:msg.country,
-        province:msg.province,
-        language:msg.language,
-        is_driver:msg.is_driver,
+        // nickName:msg.nickName,
+        // avatarUrl:msg.avatarUrl,
+        // gender:msg.gender,
+        // city:msg.city,
+        // country:msg.country,
+        // province:msg.province,
+        // language:msg.language,
+        // is_driver:msg.is_driver,
         real_name:msg.real_name,
         phone:msg.phone,
-        birthday:msg.birthday,
+        // birthday:msg.birthday,
     }
-    if(faq.id){
-        data.id = faq.id;
+    if(msg.id){
+        data.id = msg.id;
         return service({
             method: 'post',
             url:'/Admin/User/edit',
@@ -819,6 +885,19 @@ export const deletDriver = (id) => {
         url: '/Admin/User/del',
         data:{
             id: id
+        }
+    })
+}
+
+/**获取打卡列表 */
+export const getDriverLocaData = (pagePer) => {
+    return service({
+        method: 'post',
+        url: '/Admin/Driver/lists',
+        data: {
+            phone:pagePer.phone,
+            page:pagePer.page,
+            pagesize:pagePer.size,
         }
     })
 }

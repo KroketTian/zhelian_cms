@@ -71,7 +71,7 @@
     } from '../../service/getData'
     import {
         checkIsLogin,
-        delCookie
+        logoutFun
     } from '../../config/mUtils'
 
     let checkMenuFromMenuData = (menuData,target) => {
@@ -147,6 +147,12 @@
                         link: 'driver',
                         icon: 'el-icon-s-finance',
                         premission:'driver',
+                    }, {
+                        name: '打卡记录',
+                        index: 'driver_loca',
+                        link: 'driver_loca',
+                        icon: 'el-icon-s-finance',
+                        premission:'driver_loca',
                     },
 
                     //     name: '账号管理',
@@ -238,9 +244,8 @@
         methods: {
             logout() {
                 // deletToken();
-                delCookie('userId');
-                logout()
-                window.location.href="#/login"
+                logoutFun()
+                
             },
             userCommand(command) {
                 this[command]();
@@ -258,69 +263,69 @@
             }
             this.menuActive = active.index;
             //获取当前用户信息
-            getCurrentUser().then(res => {
-                this.currentUser = res.data;
-                let authList = res.data.auth ? res.data.auth.split(',') : [];
-                let newMenu = [];
-                // 根据用户权限筛选能显示的菜单
-                for(let menuI in this.menuList){
-                    // 如果有子菜单，则循环子菜单
-                    if(this.menuList[menuI].child){
-                        // 先把一级菜单加入列表+
-                        newMenu.push( JSON.parse(JSON.stringify(this.menuList[menuI])) );
-                        newMenu[newMenu.length-1].child = [];
+            // getCurrentUser().then(res => {
+            //     this.currentUser = res.data;
+            //     let authList = res.data.auth ? res.data.auth.split(',') : [];
+            //     let newMenu = [];
+            //     // 根据用户权限筛选能显示的菜单
+            //     for(let menuI in this.menuList){
+            //         // 如果有子菜单，则循环子菜单
+            //         if(this.menuList[menuI].child){
+            //             // 先把一级菜单加入列表+
+            //             newMenu.push( JSON.parse(JSON.stringify(this.menuList[menuI])) );
+            //             newMenu[newMenu.length-1].child = [];
 
-                        for(let secondMenuI in this.menuList[menuI].child){
-                            let checkMenu = this.menuList[menuI].child[secondMenuI];
-                            let isShow = false;
-                            checkMenu.premission.split(' or ').forEach(function(val,i,arr){
-                                if(res.data.is_admin == '1'){
-                                    isShow = true;
-                                }else{
-                                    for(let permissionI in authList){
-                                        let authoritie = authList[permissionI];
-                                        if(val === authoritie){
-                                            isShow = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            })
-                            isShow ? newMenu[newMenu.length-1].child.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
-                        }
+            //             for(let secondMenuI in this.menuList[menuI].child){
+            //                 let checkMenu = this.menuList[menuI].child[secondMenuI];
+            //                 let isShow = false;
+            //                 checkMenu.premission.split(' or ').forEach(function(val,i,arr){
+            //                     if(res.data.is_admin == '1'){
+            //                         isShow = true;
+            //                     }else{
+            //                         for(let permissionI in authList){
+            //                             let authoritie = authList[permissionI];
+            //                             if(val === authoritie){
+            //                                 isShow = true;
+            //                                 break;
+            //                             }
+            //                         }
+            //                     }
+            //                 })
+            //                 isShow ? newMenu[newMenu.length-1].child.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
+            //             }
 
-                        // 检查完子菜单后，如果子菜单为空，则把父菜单删除
-                        if(newMenu[newMenu.length-1].child.length < 1){
-                            newMenu.splice(length-1,1);
-                        }
-                    }else{ //如果无子菜单
-                        let checkMenu = this.menuList[menuI];
-                        let isShow = false;
-                        checkMenu.premission.split(' or ').forEach(function(val,i,arr){
-                            if(res.data.is_admin == '1'){
-                                isShow = true;
-                            }else{
-                                for(let permissionI in authList){
-                                    let authoritie = authList[permissionI];
-                                    if(val === authoritie || res.data.is_admin == '1'){
-                                        isShow = true;
-                                        break;
+            //             // 检查完子菜单后，如果子菜单为空，则把父菜单删除
+            //             if(newMenu[newMenu.length-1].child.length < 1){
+            //                 newMenu.splice(length-1,1);
+            //             }
+            //         }else{ //如果无子菜单
+            //             let checkMenu = this.menuList[menuI];
+            //             let isShow = false;
+            //             checkMenu.premission.split(' or ').forEach(function(val,i,arr){
+            //                 if(res.data.is_admin == '1'){
+            //                     isShow = true;
+            //                 }else{
+            //                     for(let permissionI in authList){
+            //                         let authoritie = authList[permissionI];
+            //                         if(val === authoritie || res.data.is_admin == '1'){
+            //                             isShow = true;
+            //                             break;
 
-                                    }
-                                }
-                            }
-                        })
-                        isShow ? newMenu.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
-                    }
-                }
-                this.menuList = newMenu;
+            //                         }
+            //                     }
+            //                 }
+            //             })
+            //             isShow ? newMenu.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
+            //         }
+            //     }
+            //     this.menuList = newMenu;
 
-            }).catch(err => {
-                console.log(err);
-                if(err.data.code === 4002){
-                    window.location.href="#/login"
-                }
-            })
+            // }).catch(err => {
+            //     console.log(err);
+            //     if(err.data.code === 4002){
+            //         logoutFun()
+            //     }
+            // })
         },
         watch: {
             $route(to, from) {

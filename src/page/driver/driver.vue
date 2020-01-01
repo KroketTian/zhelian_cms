@@ -22,7 +22,7 @@
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
-                        <!-- <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button> -->
+                        <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,8 +46,8 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="addDialogVisible = false">确 定</el-button>
-                <!-- <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button> -->
-                <!-- <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button> -->
+                <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
+                <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
         </el-dialog>
     </div>
@@ -60,7 +60,7 @@
         deletDriver
     } from '@/service/getData'
     import {
-        reflashAddForm
+        reflashAddForm,deepClone
     } from '@/config/mUtils'
 
     let getTableDataService = getDriverData,
@@ -80,8 +80,8 @@
             defaultData:'',
         },
         {
-            name:'createTime',
-            tableTitleName:'创建时间',
+            name:'real_name',
+            tableTitleName:'姓名',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -90,8 +90,8 @@
             defaultData:'',
         },
         {
-            name:'firstName',
-            tableTitleName:'姓氏',
+            name:'phone',
+            tableTitleName:'手机',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -100,11 +100,31 @@
             defaultData:'',
         },
         {
-            name:'lastName',
-            tableTitleName:'名字',
+            name:'nickname',
+            tableTitleName:'昵称',
             isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'avatarurl',
+            tableTitleName:'头像',
+            isShowInTable:false,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'birthday',
+            tableTitleName:'出生日期',
+            isShowInTable:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
@@ -113,48 +133,58 @@
             name:'country',
             tableTitleName:'国籍',
             isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
         },
         {
-            name:'companyName',
-            tableTitleName:'企业名',
+            name:'provice',
+            tableTitleName:'省份',
             isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
         },
         {
-            name:'email',
-            tableTitleName:'邮箱',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            name:'city',
+            tableTitleName:'城市',
+            isShowInTable:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
         },
         {
-            name:'phoneNum',
-            tableTitleName:'手机',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            name:'language',
+            tableTitleName:'语言',
+            isShowInTable:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
         },
         {
-            name:'detail',
-            tableTitleName:'备注',
+            name:'edit_time',
+            tableTitleName:'最新修改时间',
             isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'openid',
+            tableTitleName:'openid',
+            isShowInTable:false,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
@@ -208,27 +238,27 @@
                     pagePer[i] = this.searchForm[i];
                 }
                 getTableDataService(pagePer).then(res => {
-                    this.tableData = res.content;
-                    this.totalData = res.totalElements;
-                    this.pageSize = res.size;
-                    this.currentPage = res.page;
+                    this.tableData = res.data.list;
+                    this.totalData = Number(res.data.total);
+                    // this.pageSize = res.size;
+                    // this.currentPage = res.page;
                 })
             },
             /**添加 */
-            // addTableData() {
-            //     addService(this.addForm).then(res => {
-            //         this.addMsg = '';
-            //         this.addDialogVisible = false;
-            //         this.getTableData();
-            //     }).catch((err) => {
-            //         // 请求成功发出，服务器响应的状态码不在2xx范围内
-            //         if (err.response) {
-            //             this.addMsg = err.response.data.error_description;
-            //         } else {
-            //             this.addMsg = err.message;
-            //         }
-            //     })
-            // },
+            addTableData() {
+                addService(this.addForm).then(res => {
+                    this.addMsg = '';
+                    this.addDialogVisible = false;
+                    this.getTableData();
+                }).catch((err) => {
+                    // 请求成功发出，服务器响应的状态码不在2xx范围内
+                    if (err.response) {
+                        this.addMsg = err.response.data.error_description;
+                    } else {
+                        this.addMsg = err.message;
+                    }
+                })
+            },
             /**添加-打开弹窗 */
             openAddTable() {
                 this.addForm = reflashAddForm(this.tableDataDemo);
@@ -239,9 +269,15 @@
             },
             /**详情-打开弹窗 */
             openDetailTable(id) {
-                getDetailService(id).then(res => {
-                    this.addForm = res;
-                })
+                for(let i in this.tableData){
+                    if(this.tableData[i].id == id){
+                        this.addForm = deepClone(this.tableData[i]);
+                        this.addForm.password = ''
+                    }
+                }
+                // getDetailService(id).then(res => {
+                //     this.addForm = res;
+                // })
                 this.addMsg = '';
                 this.addDialogTitle = '详情';
                 this.addDialogVisible = true;
@@ -258,20 +294,20 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // deletService(id).then(res => {
-                    //     this.$message({
-                    //         type: 'success',
-                    //         message: '删除成功!'
-                    //     });
-                    //     this.getTableData();
-                    // }).catch((err) => {
-                    //     let msg = '删除失败!';
-                    //     this.$message({
-                    //         type: 'error',
-                    //         message: msg,
-                    //         duration:4000,
-                    //     });
-                    // })
+                    deletService(id).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getTableData();
+                    }).catch((err) => {
+                        let msg = '删除失败!';
+                        this.$message({
+                            type: 'error',
+                            message: msg,
+                            duration:4000,
+                        });
+                    })
                 }).catch(() => {
                     this.$message({
                         type: 'info',

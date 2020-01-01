@@ -19,6 +19,7 @@ import descript from '@/page/descript/descript'
 import branch_type from '@/page/branch_type/branch_type'
 import branch from '@/page/branch/branch'
 import driver from '@/page/driver/driver'
+import driver_loca from '@/page/driver_loca/driver_loca'
 
 Vue.use(Router)
 
@@ -87,6 +88,11 @@ export default new Router({
                     path: 'driver',
                     name: 'driver',
                     component: driver,
+                },
+                {
+                    path: 'driver_loca',
+                    name: 'driver_loca',
+                    component: driver_loca,
                 },
                 // {
                 //     path: 'permissions',

@@ -310,7 +310,14 @@ export const delCookie = (name) => {
     exp.setTime(exp.getTime() - 1);
     var cval = getCookie(name);
     if (cval != null)
+    console.log(cval)
         document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+}
+// 退出登录
+export const logoutFun = () => {
+    delCookie('userId');
+    logout();
+    window.location.href="#/login"
 }
 
 //检测是否登录，过期登录作相应处理
@@ -398,7 +405,7 @@ export const reflashAddForm = (tableDataDemo) => {
     for(let demoI in tableDataDemo){
         switch (tableDataDemo[demoI].dataType){
             case 'string':
-                re[tableDataDemo[demoI].name] = '';
+                re[tableDataDemo[demoI].name] = tableDataDemo[demoI].defaultData;
                 break;
             case 'arry':
                 re[tableDataDemo[demoI].name] = [];
@@ -411,4 +418,8 @@ export const reflashAddForm = (tableDataDemo) => {
         }
     }
     return re;
+}
+// 深拷贝
+export const deepClone = (data) => {
+    return JSON.parse(JSON.stringify( data ))
 }

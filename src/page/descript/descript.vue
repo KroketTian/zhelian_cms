@@ -12,8 +12,8 @@
                 </el-form>
             </div>
             <div class="ctrl-btns">
-                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
-                <!-- <el-button type="primary" size="mini" @click="openAddTable">添加</el-button> -->
+                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
+                <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
             </div>
         </div>
         <div class="content-block">
@@ -22,7 +22,7 @@
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
-                        <!-- <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button> -->
+                        <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -45,9 +45,9 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">确 定</el-button>
-                <!-- <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button> -->
-                <!-- <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button> -->
+                <el-button @click="addDialogVisible = false">取 消</el-button>
+                <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
+                <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
         </el-dialog>
     </div>
@@ -55,19 +55,19 @@
 <script>
     import {
         getDesData,
-        // addFaq,
-        getMessagesDetail,
-        // deletFaq
+        addDes,
+        getDesDetail,
+        deletDes
     } from '@/service/getData'
     import {
-        reflashAddForm
+        reflashAddForm,deepClone
     } from '@/config/mUtils'
 
     let getTableDataService = getDesData,
-        getDetailService = getMessagesDetail;
-        // addService = addFaq,
-        // editService = addFaq,
-        // deletService = deletFaq;
+        getDetailService = getDesDetail,
+        addService = addDes,
+        editService = addDes,
+        deletService = deletDes;
     let tableDataDemo = [
         {
             name:'id',
@@ -80,8 +80,8 @@
             defaultData:'',
         },
         {
-            name:'createTime',
-            tableTitleName:'创建时间',
+            name:'title',
+            tableTitleName:'标题',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -90,69 +90,9 @@
             defaultData:'',
         },
         {
-            name:'firstName',
-            tableTitleName:'姓氏',
+            name:'content',
+            tableTitleName:'内容',
             isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'lastName',
-            tableTitleName:'名字',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'country',
-            tableTitleName:'国籍',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'companyName',
-            tableTitleName:'企业名',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'email',
-            tableTitleName:'邮箱',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'phoneNum',
-            tableTitleName:'手机',
-            isShowInTable:false,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'detail',
-            tableTitleName:'备注',
-            isShowInTable:false,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
             isShowSearch:false,
@@ -200,35 +140,40 @@
         methods: {
             /**获取表格数据 */
             getTableData: function () {
-                let pagePer = {
-                    page: this.currentPage,
-                    size: this.pageSize,
-                }
-                for(let i in this.searchForm){
-                    pagePer[i] = this.searchForm[i];
-                }
-                getTableDataService(pagePer).then(res => {
-                    this.tableData = res.content;
+                // let pagePer = {
+                //     page: this.currentPage,
+                //     size: this.pageSize,
+                // }
+                // for(let i in this.searchForm){
+                //     pagePer[i] = this.searchForm[i];
+                // }
+                getTableDataService().then(res => {
+                    this.tableData = res.data.list;
                     this.totalData = res.totalElements;
                     this.pageSize = res.size;
                     this.currentPage = res.page;
                 })
             },
             /**添加 */
-            // addTableData() {
-            //     addService(this.addForm).then(res => {
-            //         this.addMsg = '';
-            //         this.addDialogVisible = false;
-            //         this.getTableData();
-            //     }).catch((err) => {
-            //         // 请求成功发出，服务器响应的状态码不在2xx范围内
-            //         if (err.response) {
-            //             this.addMsg = err.response.data.error_description;
-            //         } else {
-            //             this.addMsg = err.message;
-            //         }
-            //     })
-            // },
+            addTableData() {
+                if(!this.addForm.content || !this.addForm.title){
+                    this.addMsg = '请输入完整信息';
+                    return
+                }
+                this.addMsg = '';
+                addService(this.addForm).then(res => {
+                    this.addMsg = '';
+                    this.addDialogVisible = false;
+                    this.getTableData();
+                }).catch((err) => {
+                    // 请求成功发出，服务器响应的状态码不在2xx范围内
+                    if (err.data) {
+                        this.addMsg = err.data.error_description;
+                    } else {
+                        this.addMsg = err.message;
+                    }
+                })
+            },
             /**添加-打开弹窗 */
             openAddTable() {
                 this.addForm = reflashAddForm(this.tableDataDemo);
@@ -240,7 +185,7 @@
             /**详情-打开弹窗 */
             openDetailTable(id) {
                 getDetailService(id).then(res => {
-                    this.addForm = res;
+                    this.addForm = res.data;
                 })
                 this.addMsg = '';
                 this.addDialogTitle = '详情';
@@ -258,20 +203,20 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // deletService(id).then(res => {
-                    //     this.$message({
-                    //         type: 'success',
-                    //         message: '删除成功!'
-                    //     });
-                    //     this.getTableData();
-                    // }).catch((err) => {
-                    //     let msg = '删除失败!';
-                    //     this.$message({
-                    //         type: 'error',
-                    //         message: msg,
-                    //         duration:4000,
-                    //     });
-                    // })
+                    deletService(id).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getTableData();
+                    }).catch((err) => {
+                        let msg = '删除失败!';
+                        this.$message({
+                            type: 'error',
+                            message: msg,
+                            duration:4000,
+                        });
+                    })
                 }).catch(() => {
                     this.$message({
                         type: 'info',

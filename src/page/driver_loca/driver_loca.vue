@@ -1,16 +1,19 @@
 <template>
     <div class="autjorization">
         <div class="ctrl-block">
-            <!-- <div class="search-block">
+            <div class="search-block">
                 <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+                    <!-- <el-form-item label="关键词">
+                        <el-input v-model="searchForm.keyword" placeholder="关键词" size="mini"></el-input>
+                    </el-form-item> -->
                     <el-form-item v-for="dataDemo in showInSearchDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName">
                         <el-input v-model="searchForm[dataDemo.name]" :placeholder="dataDemo.tableTitleName" size="mini"></el-input>
                     </el-form-item>
                 </el-form>
-            </div> -->
+            </div>
             <div class="ctrl-btns">
                 <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
-                <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
+                <!-- <el-button type="primary" size="mini" @click="openAddTable">添加</el-button> -->
             </div>
         </div>
         <div class="content-block">
@@ -18,17 +21,17 @@
                 <el-table-column v-for="dataDemo in showInTableDemo" :key="dataDemo.name" v-show="dataDemo.isShowInTable" :prop="dataDemo.name" :label="dataDemo.tableTitleName"></el-table-column>
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
-                        <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
+                        <!-- <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button> -->
+                        <!-- <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
-            <!-- <div class="pagination-bar">
+            <div class="pagination-bar">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
                     :current-page="currentPage+1" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper" :total="totalData">
                 </el-pagination>
-            </div> -->
+            </div>
         </div>
         <!-- 弹窗 -->
         <!-- 添加 -->
@@ -37,51 +40,34 @@
                 <el-form-item v-for="dataDemo in showInAddDialogDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName" :label-width="addDialogLabelWidth">
                     <el-input v-model="addForm[dataDemo.name]" autocomplete="off" :disabled="!isEditing"></el-input>
                 </el-form-item>
-                <el-form-item v-if="addDialogTitle!=='添加'" label="添加时间" :label-width="addDialogLabelWidth">
-                    <el-input v-model="addForm.add_time" disabled></el-input>
-                </el-form-item>
-                <el-form-item v-if="addDialogTitle!=='添加'" label="最新编辑时间" :label-width="addDialogLabelWidth">
-                    <el-input v-model="addForm.edit_time" disabled></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="权限列表" :label-width="addDialogLabelWidth">
-                    <el-tree
-                        :data="permissions" 
-                        node-key="id"
-                        :default-checked-keys="addForm.permissions | permissionsToIdList" 
-                        show-checkbox 
-                        ref="tree"
-                        @check-change="checkPermissions">
-                    </el-tree>
-                </el-form-item> -->
                 <el-form-item>
                     <div v-show="addMsg" class="el-form-item__error">{{addMsg}}</div>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">取 消</el-button>
-                <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
-                <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
+                <el-button @click="addDialogVisible = false">确 定</el-button>
+                <!-- <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button> -->
+                <!-- <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button> -->
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
     import {
-        getRoleData,
-        getPermissionsData,
-        addRole,
-        getRoleDetail,
-        deletRole
+        getDriverLocaData,
+        // addFaq,
+        // getMessagesDetail,
+        // deletFaq
     } from '@/service/getData'
     import {
-        filterPermissionsToTree,reflashAddForm
+        reflashAddForm
     } from '@/config/mUtils'
 
-    let getTableDataService = getRoleData,
-        getDetailService = getRoleDetail,
-        addService = addRole,
-        editService = addRole,
-        deletService = deletRole;
+    let getTableDataService = getDriverLocaData;
+        // getDetailService = getMessagesDetail;
+        // addService = addFaq,
+        // editService = addFaq,
+        // deletService = deletFaq;
     let tableDataDemo = [
         {
             name:'id',
@@ -94,8 +80,8 @@
             defaultData:'',
         },
         {
-            name:'name',
-            tableTitleName:'部门名',
+            name:'real_name',
+            tableTitleName:'司机名',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -104,8 +90,8 @@
             defaultData:'',
         },
         {
-            name:'desc',
-            tableTitleName:'描述',
+            name:'location',
+            tableTitleName:'位置',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -114,31 +100,41 @@
             defaultData:'',
         },
         {
-            name:'status',
-            tableTitleName:'状态',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
+            name:'longitude',
+            tableTitleName:'经度',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
             isShowSearch:false,
-            dataType:'arry',
-            defaultData:[],
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'latitude',
+            tableTitleName:'维度',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'userId',
+            tableTitleName:'用户id',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
         },
         {
             name:'add_time',
-            tableTitleName:'添加时间',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'edit_time',
-            tableTitleName:'最新编辑时间',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
+            tableTitleName:'打卡时间',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
@@ -147,7 +143,7 @@
 
 
     export default {
-        name: 'role',
+        name: 'messages',
         data() {
             return {
                 tableData: [], //表格数据
@@ -162,14 +158,12 @@
                 },
                 addForm: {
                     id: '',
-                    description: '',
-                    role: '',
-                    permissions: [],
+                    question: '',
+                    answer: '',
                 },
                 addMsg: '', //添加弹窗的提示
                 tableDataDemo: tableDataDemo,//数据格式
-                
-                permissions: [], //权限列表
+
             }
         },
         computed: {
@@ -186,35 +180,35 @@
         methods: {
             /**获取表格数据 */
             getTableData: function () {
-                // let pagePer = {
-                //     page: this.currentPage,
-                //     size: this.pageSize,
-                // }
-                // for(let i in this.searchForm){
-                //     pagePer[i] = this.searchForm[i];
-                // }
-                getTableDataService().then(res => {
+                let pagePer = {
+                    page: this.currentPage,
+                    size: this.pageSize,
+                }
+                for(let i in this.searchForm){
+                    pagePer[i] = this.searchForm[i];
+                }
+                getTableDataService(pagePer).then(res => {
                     this.tableData = res.data.list;
-                    this.totalData = res.totalElements;
-                    this.pageSize = res.size;
-                    this.currentPage = res.page;
+                    this.totalData = res.data.total;
+                    // this.pageSize = res.size;
+                    // this.currentPage = res.page;
                 })
             },
             /**添加 */
-            addTableData() {
-                addService(this.addForm).then(res => {
-                    this.addMsg = '';
-                    this.addDialogVisible = false;
-                    this.getTableData();
-                }).catch((err) => {
-                    // 请求成功发出，服务器响应的状态码不在2xx范围内
-                    if (err.data.msg) {
-                        this.addMsg = err.data.msg;
-                    } else {
-                        this.addMsg = err.data.error_description;
-                    }
-                })
-            },
+            // addTableData() {
+            //     addService(this.addForm).then(res => {
+            //         this.addMsg = '';
+            //         this.addDialogVisible = false;
+            //         this.getTableData();
+            //     }).catch((err) => {
+            //         // 请求成功发出，服务器响应的状态码不在2xx范围内
+            //         if (err.response) {
+            //             this.addMsg = err.response.data.error_description;
+            //         } else {
+            //             this.addMsg = err.message;
+            //         }
+            //     })
+            // },
             /**添加-打开弹窗 */
             openAddTable() {
                 this.addForm = reflashAddForm(this.tableDataDemo);
@@ -225,20 +219,17 @@
             },
             /**详情-打开弹窗 */
             openDetailTable(id) {
-                getDetailService(id).then(res => {
-                    this.addForm = res.data;
-                    this.changeEditStatus(false);
-                })
+                // getDetailService(id).then(res => {
+                //     this.addForm = res;
+                // })
                 this.addMsg = '';
                 this.addDialogTitle = '详情';
                 this.addDialogVisible = true;
+                this.changeEditStatus(false);
             },
             /**详情-改变编辑状态,true:可编辑状态,flase:不可编辑状态 */
             changeEditStatus(flag){
                 this.isEditing = flag;
-                // getPermissionsData().then(res => {
-                //     this.permissions = filterPermissionsToTree(res,!flag);
-                // })
             },
             /**删除 */
             openDelet(id) {
@@ -247,26 +238,20 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    deletService(id).then(res => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                        this.getTableData();
-                    }).catch((err) => {
-                        let msg = '删除失败!';
-                        if(err.response){
-                            switch (err.response.data.error){
-                                case '40001':
-                                    msg = '删除失败，存在引用该角色的用户！';
-                                    break;
-                            }
-                        }
-                        this.$message({
-                            type: 'error',
-                            message: msg,
-                        });
-                    })
+                    // deletService(id).then(res => {
+                    //     this.$message({
+                    //         type: 'success',
+                    //         message: '删除成功!'
+                    //     });
+                    //     this.getTableData();
+                    // }).catch((err) => {
+                    //     let msg = '删除失败!';
+                    //     this.$message({
+                    //         type: 'error',
+                    //         message: msg,
+                    //         duration:4000,
+                    //     });
+                    // })
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -283,10 +268,6 @@
             handleCurrentChange(val) {
                 this.currentPage = val - 1;
                 this.getTableData()
-            },
-            /**添加角色-选择权限列表 */
-            checkPermissions(data, checked, indeterminate) {
-                this.addForm.permissions = this.$refs.tree.getCheckedNodes()
             },
         },
         beforeMount: function () {

@@ -1,5 +1,6 @@
 import axios from "axios";
 import qs from "qs";
+import {logoutFun} from '../config/mUtils'
 import {
     apiBaseUrl
 } from './env'
@@ -52,6 +53,7 @@ service.interceptors.response.use(
         }
     },
     error => { //响应错误处理
+        loadingInstance.close();
         setErrorData(error)
         return Promise.reject(error)
     }
@@ -102,7 +104,7 @@ function setErrorData(error){
     let rep = /\#\/login/;
     let isLoginPage = rep.test(window.location.href);
     if(error.code === 4001 && !isLoginPage){
-        window.location.href="#/login"
+        logoutFun();
     }
     for(let i = 0 ; i < errorMsg.length ; i++){
         if(error.code == errorMsg[i].code){
