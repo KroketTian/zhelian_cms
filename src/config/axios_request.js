@@ -44,7 +44,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
     response => { //成功请求到数据
         loadingInstance.close();
-        if(/^2/.test(response.data.code)){
+        if(/^2/.test(response.data.code) || !response.data.code){
             //这里根据后端提供的数据进行对应的处理
             return response.data;
         }else{// 如果接口错误

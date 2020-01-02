@@ -4,7 +4,7 @@
 
             <el-header height="50px">
                 <!-- <img class="control-logo" src="../../assets/veda_logo_black.png"/> -->
-                <div class="head-logo">TIN STUDIOS</div>
+                <!-- <div class="head-logo">TIN STUDIOS</div> -->
                 <div class="head-right">
                     <el-dropdown @command="userCommand">
                         <div class="user el-dropdown-link">

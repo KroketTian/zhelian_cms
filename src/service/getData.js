@@ -797,8 +797,8 @@ export const getBranchTypeData = (pagePer) => {
         url: '/Admin/Category/lists',
         data: {
             // keyword:pagePer.keyword,
-            page:pagePer.page,
-            pagesize:pagePer.size,
+            // page:pagePer.page,
+            // pagesize:pagePer.size,
         }
     })
 }
@@ -814,8 +814,9 @@ export const addBranchType = (bt) => {
     let data = {
         title:bt.title,
         sort:bt.sort,
+        parent_id:bt.parent_id,
     }
-    if(faq.id){
+    if(bt.id){
         data.id = bt.id;
         return service({
             method: 'post',
