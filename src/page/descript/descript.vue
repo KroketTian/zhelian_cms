@@ -140,18 +140,18 @@
         methods: {
             /**获取表格数据 */
             getTableData: function () {
-                // let pagePer = {
-                //     page: this.currentPage,
-                //     size: this.pageSize,
-                // }
-                // for(let i in this.searchForm){
-                //     pagePer[i] = this.searchForm[i];
-                // }
-                getTableDataService().then(res => {
+                let pagePer = {
+                    page: this.currentPage,
+                    size: this.pageSize,
+                }
+                for(let i in this.searchForm){
+                    pagePer[i] = this.searchForm[i];
+                }
+                getTableDataService(pagePer).then(res => {
                     this.tableData = res.data.list;
-                    this.totalData = res.totalElements;
-                    this.pageSize = res.size;
-                    this.currentPage = res.page;
+                    this.totalData = Number(res.data.total);
+                    // this.pageSize = res.size;
+                    // this.currentPage = res.page;
                 })
             },
             /**添加 */

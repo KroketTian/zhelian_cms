@@ -12,19 +12,19 @@
                 </el-form>
             </div>
             <div class="ctrl-btns">
-                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
+                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
                 <!-- <el-button type="primary" size="mini" @click="openAddTable">添加</el-button> -->
             </div>
         </div>
         <div class="content-block">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column v-for="dataDemo in showInTableDemo" :key="dataDemo.name" v-show="dataDemo.isShowInTable" :prop="dataDemo.name" :label="dataDemo.tableTitleName"></el-table-column>
-                <el-table-column label="操作" width="150">
+                <!-- <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
-                        <!-- <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button> -->
-                        <!-- <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button> -->
+                        <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
+                        <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="pagination-bar">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
@@ -120,7 +120,7 @@
             defaultData:'',
         },
         {
-            name:'userId',
+            name:'userid',
             tableTitleName:'用户id',
             isShowInTable:true,
             isShowInAddDialog:true,
@@ -136,6 +136,16 @@
             isShowInAddDialog:true,
             isShowInEditDislog:true,
             isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'phone',
+            tableTitleName:'司机手机',
+            isShowInTable:false,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:true,
             dataType:'string',
             defaultData:'',
         },
@@ -189,7 +199,7 @@
                 }
                 getTableDataService(pagePer).then(res => {
                     this.tableData = res.data.list;
-                    this.totalData = res.data.total;
+                    this.totalData = Number(res.data.total);
                     // this.pageSize = res.size;
                     // this.currentPage = res.page;
                 })

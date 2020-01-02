@@ -45,7 +45,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">确 定</el-button>
+                <el-button @click="addDialogVisible = false">取 消</el-button>
                 <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
                 <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
@@ -95,7 +95,7 @@
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
-            isShowSearch:false,
+            isShowSearch:true,
             dataType:'string',
             defaultData:'',
         },

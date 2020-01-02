@@ -24,6 +24,13 @@
                         <div v-for="role in scope.row.roles" :key="role.id">{{ role.description }}</div>
                     </template>
                 </el-table-column> -->
+                <el-table-column label="状态">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status == '1'">启用</span>
+                        <span v-if="scope.row.status == '0'">禁用</span>
+                        <span v-if="scope.row.status == '2'">删除</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="是否超级管理员">
                     <template slot-scope="scope">
                         <el-switch v-model="scope.row.is_admin" disabled></el-switch>
@@ -83,7 +90,7 @@
                     <el-radio-group v-model="addForm.status">
                       <el-radio :label="'1'" :disabled="!isEditing">启用</el-radio>
                       <el-radio :label="'0'" :disabled="!isEditing">禁用</el-radio>
-                      <el-radio :label="'2'" :disabled="!isEditing">删除</el-radio>
+                      <!-- <el-radio :label="'2'" :disabled="!isEditing">删除</el-radio> -->
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="权限列表" :label-width="addDialogLabelWidth">
@@ -191,7 +198,7 @@
         {
             name:'auth',
             tableTitleName:'权限列表',
-            isShowInTable:true,
+            isShowInTable:false,
             isShowInAddDialog:false,
             isShowInEditDislog:false,
             isShowSearch:false,
@@ -231,7 +238,7 @@
         {
             name:'status',
             tableTitleName:'用户状态',
-            isShowInTable:true,
+            isShowInTable:false,
             isShowInAddDialog:false,
             isShowInEditDislog:false,
             isShowSearch:false,
@@ -261,7 +268,7 @@
                 pageSize: 10, //每页条数
                 isEditing:false,//是否正在编辑
                 addDialogVisible: false, //添加弹窗是否可见
-                addDialogLabelWidth: '120px',
+                addDialogLabelWidth: '140px',
                 addDialogTitle: '添加',
                 searchForm:{
                     keyword:'',
@@ -314,8 +321,8 @@
                     }
                     this.tableData = res.data.list;
                     this.totalData = Number(res.data.total);
-                    this.pageSize = Number(res.pagesize);
-                    this.currentPage = Number(res.page);
+                    // this.pageSize = Number(res.pagesize);
+                    // this.currentPage = Number(res.page);
                 })
             },
             /**添加 */

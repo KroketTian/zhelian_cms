@@ -13,7 +13,7 @@
             </div> -->
             <div class="ctrl-btns">
                 <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
-                <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
+                <el-button type="primary" size="mini" @click="openAddTable()">添加</el-button>
             </div>
         </div>
         <div class="content-block">
@@ -46,7 +46,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">确 定</el-button>
+                <el-button @click="addDialogVisible = false">取 消</el-button>
                 <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
                 <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
@@ -187,6 +187,13 @@
             /**添加 */
             addTableData() {
                 addService(this.addForm).then(res => {
+                    if(res === 0){
+                        this.$message({
+                            type: 'error',
+                            message: '提交失败,请填写合法的数据',
+                            duration:2000,
+                        });
+                    }
                     this.addMsg = '';
                     this.addDialogVisible = false;
                     this.getTableData();

@@ -13,7 +13,7 @@
             </div>
             <div class="ctrl-btns">
                 <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
-                <!-- <el-button type="primary" size="mini" @click="openAddTable">添加</el-button> -->
+                <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
             </div>
         </div>
         <div class="content-block">
@@ -22,7 +22,7 @@
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
-                        <!-- <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button> -->
+                        <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,34 +40,45 @@
                 <el-form-item v-for="dataDemo in showInAddDialogDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName" :label-width="addDialogLabelWidth">
                     <el-input v-model="addForm[dataDemo.name]" autocomplete="off" :disabled="!isEditing"></el-input>
                 </el-form-item>
+                <el-form-item label="分类" :label-width="addDialogLabelWidth">
+                    <el-select v-model="addForm.cid" :disabled="!isEditing" placeholder="请选择" >
+                        <el-option
+                            v-for="cat in catData"
+                            :key="cat.id"
+                            :label="cat.title"
+                            :value="cat.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <div v-show="addMsg" class="el-form-item__error">{{addMsg}}</div>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false">确 定</el-button>
-                <!-- <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button> -->
-                <!-- <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button> -->
+                <el-button @click="addDialogVisible = false">取 消</el-button>
+                <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
+                <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
     import {
-        getMessagesData,
-        // addFaq,
-        getMessagesDetail,
-        // deletFaq
+        getBranchData,
+        addBranch,
+        getBranchDetail,
+        deletBranch,
+        getBranchTypeData
     } from '@/service/getData'
     import {
         reflashAddForm
     } from '@/config/mUtils'
 
-    let getTableDataService = getMessagesData,
-        getDetailService = getMessagesDetail;
-        // addService = addFaq,
-        // editService = addFaq,
-        // deletService = deletFaq;
+    let getTableDataService = getBranchData,
+        getDetailService = getBranchDetail,
+        addService = addBranch,
+        editService = addBranch,
+        deletService = deletBranch;
     let tableDataDemo = [
         {
             name:'id',
@@ -80,8 +91,18 @@
             defaultData:'',
         },
         {
-            name:'createTime',
-            tableTitleName:'创建时间',
+            name:'cid',
+            tableTitleName:'分类id',
+            isShowInTable:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:true,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'name',
+            tableTitleName:'负责人姓名',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -90,8 +111,8 @@
             defaultData:'',
         },
         {
-            name:'firstName',
-            tableTitleName:'姓氏',
+            name:'phone',
+            tableTitleName:'负责人手机',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -100,8 +121,8 @@
             defaultData:'',
         },
         {
-            name:'lastName',
-            tableTitleName:'名字',
+            name:'desc',
+            tableTitleName:'描述',
             isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -110,28 +131,18 @@
             defaultData:'',
         },
         {
-            name:'country',
-            tableTitleName:'国籍',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
+            name:'icon',
+            tableTitleName:'头像',
+            isShowInTable:false,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
             isShowSearch:false,
             dataType:'string',
             defaultData:'',
         },
         {
-            name:'companyName',
-            tableTitleName:'企业名',
-            isShowInTable:true,
-            isShowInAddDialog:true,
-            isShowInEditDislog:true,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
-        },
-        {
-            name:'email',
-            tableTitleName:'邮箱',
+            name:'longitude',
+            tableTitleName:'经度',
             isShowInTable:false,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -140,8 +151,8 @@
             defaultData:'',
         },
         {
-            name:'phoneNum',
-            tableTitleName:'手机',
+            name:'latitude',
+            tableTitleName:'纬度',
             isShowInTable:false,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
@@ -150,9 +161,9 @@
             defaultData:'',
         },
         {
-            name:'detail',
-            tableTitleName:'备注',
-            isShowInTable:false,
+            name:'location',
+            tableTitleName:'位置',
+            isShowInTable:true,
             isShowInAddDialog:true,
             isShowInEditDislog:true,
             isShowSearch:false,
@@ -178,11 +189,12 @@
                 },
                 addForm: {
                     id: '',
-                    question: '',
-                    answer: '',
+                    cid: '',
+                    name: '',
                 },
                 addMsg: '', //添加弹窗的提示
                 tableDataDemo: tableDataDemo,//数据格式
+                catData:[],//分类列表
 
             }
         },
@@ -208,27 +220,39 @@
                     pagePer[i] = this.searchForm[i];
                 }
                 getTableDataService(pagePer).then(res => {
-                    this.tableData = res.content;
-                    this.totalData = res.totalElements;
-                    this.pageSize = res.size;
-                    this.currentPage = res.page;
+                    this.tableData = res.data.list;
+                    this.totalData = Number(res.data.total);
+                    // this.pageSize = res.size;
+                    // this.currentPage = res.page;
                 })
             },
             /**添加 */
-            // addTableData() {
-            //     addService(this.addForm).then(res => {
-            //         this.addMsg = '';
-            //         this.addDialogVisible = false;
-            //         this.getTableData();
-            //     }).catch((err) => {
-            //         // 请求成功发出，服务器响应的状态码不在2xx范围内
-            //         if (err.response) {
-            //             this.addMsg = err.response.data.error_description;
-            //         } else {
-            //             this.addMsg = err.message;
-            //         }
-            //     })
-            // },
+            addTableData() {
+                if(!this.addForm.cid){
+                    this.addMsg = '请选择分类';
+                    return
+                }
+                if(!this.addForm.name){
+                    this.addMsg = '请填写负责人姓名';
+                    return
+                }
+                if(!this.addForm.phone){
+                    this.addMsg = '请填写负责人手机';
+                    return
+                }
+                addService(this.addForm).then(res => {
+                    this.addMsg = '';
+                    this.addDialogVisible = false;
+                    this.getTableData();
+                }).catch((err) => {
+                    // 请求成功发出，服务器响应的状态码不在2xx范围内
+                    if (err.response) {
+                        this.addMsg = err.response.data.error_description;
+                    } else {
+                        this.addMsg = err.message;
+                    }
+                })
+            },
             /**添加-打开弹窗 */
             openAddTable() {
                 this.addForm = reflashAddForm(this.tableDataDemo);
@@ -240,7 +264,7 @@
             /**详情-打开弹窗 */
             openDetailTable(id) {
                 getDetailService(id).then(res => {
-                    this.addForm = res;
+                    this.addForm = res.data;
                 })
                 this.addMsg = '';
                 this.addDialogTitle = '详情';
@@ -249,6 +273,25 @@
             },
             /**详情-改变编辑状态,true:可编辑状态,flase:不可编辑状态 */
             changeEditStatus(flag){
+                //获取企业选项
+                getBranchTypeData().then(res => {
+                    let re = [];
+                    getAllCatData(re,{children:res});
+                    this.catData = re;
+                })
+                function getAllCatData(re,obj){
+                    if(obj.id && !re.children){
+                        re.push({
+                            icon:obj.icon,
+                            id:obj.id,
+                            parent_id:obj.parent_id,
+                            title:obj.title,
+                        })
+                    }
+                    for(let i in obj.children){
+                        getAllCatData(re,obj.children[i])
+                    }
+                }
                 this.isEditing = flag;
             },
             /**删除 */
@@ -258,20 +301,20 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // deletService(id).then(res => {
-                    //     this.$message({
-                    //         type: 'success',
-                    //         message: '删除成功!'
-                    //     });
-                    //     this.getTableData();
-                    // }).catch((err) => {
-                    //     let msg = '删除失败!';
-                    //     this.$message({
-                    //         type: 'error',
-                    //         message: msg,
-                    //         duration:4000,
-                    //     });
-                    // })
+                    deletService(id).then(res => {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getTableData();
+                    }).catch((err) => {
+                        let msg = '删除失败!';
+                        this.$message({
+                            type: 'error',
+                            message: msg,
+                            duration:4000,
+                        });
+                    })
                 }).catch(() => {
                     this.$message({
                         type: 'info',

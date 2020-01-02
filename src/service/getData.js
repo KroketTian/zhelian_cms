@@ -174,7 +174,7 @@ export const getUserData = (pagePer) => {
         url: '/Admin/AdminUser/lists',
         data: {
             // keyword:pagePer.keyword,
-            page:pagePer.page,
+            page:pagePer.page+1,
             pagesize:pagePer.size,
         }
     })
@@ -194,7 +194,7 @@ export const addUser = (user) => {
     let data = {
         username:user.username,
         realname:user.realname,
-        auth_list:user.auth,
+        auth:user.auth,
         group_id:user.group_id,
         is_admin:user.is_admin,
         status:user.status,
@@ -505,7 +505,7 @@ export const getImageData = (pagePer) => {
     if(pagePer){
         par = {
             // keyword:pagePer.keyword,
-            // groupId:pagePer.groupId,
+            status:pagePer.status,
             page:pagePer.page,
             pagesize:pagePer.size,
         }
@@ -521,6 +521,16 @@ export const getImageData = (pagePer) => {
         data: par
     })
 }
+/**获取图片详情 */
+export const getImageDetail = (id) => {
+    return service({
+        method: 'post',
+        url: '/Admin/Ads/detail',
+        data:{
+            id: id
+        }
+    })
+}
 /**添加图片 */
 export const addImageCate = (image) => {
     let data = {
@@ -532,27 +542,17 @@ export const addImageCate = (image) => {
         desc:image.desc,
         type:image.type,
     }
-    return service({
-        method: 'post',
-        url:'/Admin/Ads/add',
-        data: data,
-    })
-}
-/**修改图片 */
-export const editImageCate = (image) => {
-    let data = {
-        id:image.id,
-        title:image.title,
-        image:image.image,
-        url:image.url,
-        status:image.status,
-        sort:image.sort,
-        desc:image.desc,
-        type:image.type,
+    if(image.id){
+        data.id = image.id;
+        return service({
+            method: 'post',
+            url:'/Admin/Ads/edit',
+            data: data,
+        })
     }
     return service({
         method: 'post',
-        url:'/Admin/Ads/edit',
+        url:'/Admin/Ads/add',
         data: data,
     })
 }
@@ -560,7 +560,7 @@ export const editImageCate = (image) => {
 export const deletImageCate = (ids) => {
     // let paramsStr = '?id=' + ids.join('&id=');
     return service({
-        method: 'delete',
+        method: 'post',
         url: '/Admin/Ads/del',
         data:{
             id:ids
@@ -744,10 +744,10 @@ export const getDesData = (pagePer) => {
     return service({
         method: 'post',
         url: '/Admin/Portal/lists',
-        // data: {
-        //     page:pagePer.page,
-        //     pagesize:pagePer.size,
-        // }
+        data: {
+            page:pagePer.page+1,
+            pagesize:pagePer.size,
+        }
     })
 }/**获取文字详情 */
 export const getDesDetail = (id) => {
@@ -820,13 +820,13 @@ export const addBranchType = (bt) => {
         data.id = bt.id;
         return service({
             method: 'post',
-            url:'/Admin/category/addCate',
+            url:'/Admin/category/updateCate',
             data: data,
         })
     }
     return service({
         method: 'post',
-        url:'/Admin/category/updateCate',
+        url:'/Admin/category/addCate',
         data: data,
     })
 }
@@ -841,6 +841,65 @@ export const deletBranchType = (id) => {
     })
 }
 
+/**获取网点列表 */
+export const getBranchData = (pagePer) => {
+    return service({
+        method: 'post',
+        url: '/Admin/branch/lists',
+        data: {
+            cid:pagePer.cid,
+            page:pagePer.page+1,
+            pageSize:Number(pagePer.size),
+        }
+    })
+}
+/**获取网点详情 */
+export const getBranchDetail = (id) => {
+    return service({
+        method: 'post',
+        url: '/Admin/branch/detail',
+        data:{
+            id: id
+        }
+    })
+}
+/**添加、编辑网点 */
+export const addBranch = (msg) => {
+    let data = {
+        cid:msg.cid,
+        name:msg.name,
+        phone:msg.phone,
+        desc:msg.desc,
+        icon:msg.icon,
+        longitude:msg.longitude,
+        latitude:msg.latitude,
+        location:msg.location,
+    }
+    if(msg.id){
+        data.id = msg.id;
+        return service({
+            method: 'post',
+            url:'/Admin/branch/edit',
+            data: data,
+        })
+    }
+    return service({
+        method: 'post',
+        url:'/Admin/branch/add',
+        data: data,
+    })
+}
+/**删除网点 */
+export const deletBranch = (id) => {
+    return service({
+        method: 'post',
+        url: '/Admin/branch/del',
+        data:{
+            id: id
+        }
+    })
+}
+
 /**获取司机列表 */
 export const getDriverData = (pagePer) => {
     return service({
@@ -849,7 +908,7 @@ export const getDriverData = (pagePer) => {
         data: {
             phone:pagePer.phone,
             // is_driver:'1',
-            page:pagePer.page,
+            page:pagePer.page+1,
             pagesize:pagePer.size,
         }
     })
@@ -897,7 +956,7 @@ export const getDriverLocaData = (pagePer) => {
         url: '/Admin/Driver/lists',
         data: {
             phone:pagePer.phone,
-            page:pagePer.page,
+            page:pagePer.page+1,
             pagesize:pagePer.size,
         }
     })

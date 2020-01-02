@@ -1,50 +1,73 @@
 <template>
     <div class="autjorization">
         <div class="ctrl-block">
-            <!-- <div class="search-block">
+            <div class="search-block">
                 <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-                    <el-form-item label="关键词">
+                    <!-- <el-form-item label="关键词">
                         <el-input v-model="searchForm.keyword" placeholder="关键词" size="mini"></el-input>
                     </el-form-item>
-                    <el-form-item label="分组">
-                        <el-select v-model="searchForm.groupId" placeholder="请选择" size="mini">
-                            <el-option label="全部" value=""></el-option>
+                    <el-form-item v-for="dataDemo in showInSearchDemo" :key="dataDemo.name"
+                        :label="dataDemo.tableTitleName">
+                        <el-input v-model="searchForm[dataDemo.name]" :placeholder="dataDemo.tableTitleName"
+                            size="mini"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分类">
+                        <el-select v-model="searchForm.categoryId" placeholder="请选择" size="mini">
                             <el-option
-                                v-for="imgCate in imgCates"
-                                :key="imgCate.id"
-                                :label="imgCate.name"
-                                :value="imgCate.id">
+                                label="全部"
+                                value="">
+                            </el-option>
+                            <el-option
+                                v-for="productCate in productCateData"
+                                :key="productCate.id"
+                                :label="productCate.name"
+                                :value="productCate.id">
                             </el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item v-for="dataDemo in showInSearchDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName">
-                        <el-input v-model="searchForm[dataDemo.name]" :placeholder="dataDemo.tableTitleName" size="mini"></el-input>
+                    </el-form-item> -->
+                    <el-form-item label="显示">
+                        <el-select v-model="searchForm.status" placeholder="请选择" size="mini">
+                            <el-option label="全部" value=""></el-option>
+                            <el-option label="是" value="1"></el-option>
+                            <el-option label="否" value="2"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-form>
-            </div> -->
+            </div>
             <div class="ctrl-btns">
-                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">刷新</el-button>
+                <el-button type="primary" @click="currentPage = 0 ;getTableData()" size="mini">查询</el-button>
                 <el-button type="primary" size="mini" @click="openAddTable">添加</el-button>
             </div>
         </div>
         <div class="content-block">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column label="预览" width="150">
-                    <template slot-scope="scope">
+                <el-table-column label="图片" width="150">
+                    <template slot-scope="scope" v-if="scope.row.image">
                         <el-image
                             style="width: 130px; height: 130px"
-                            :src="scope.row.url+'?imageMogr2/thumbnail/130x130'"
-                            fit="contain"
-                            :preview-src-list="[scope.row]">
+                            :src="apiBaseUrl + scope.row.image"
+                            fit="contain">
                         </el-image>
-                        <p class="img-table-url">{{scope.row.url}}</p>
+                        <!-- <p class="img-table-url">{{scope.row.image.url}}</p> -->
                     </template>
                 </el-table-column>
-                <el-table-column v-for="dataDemo in showInTableDemo" :key="dataDemo.name" v-show="dataDemo.isShowInTable" :prop="dataDemo.name" :label="dataDemo.tableTitleName"></el-table-column>
-
+                <el-table-column v-for="dataDemo in showInTableDemo" :key="dataDemo.name"
+                    v-show="dataDemo.isShowInTable" :prop="dataDemo.name" :label="dataDemo.tableTitleName">
+                </el-table-column>
+                <el-table-column label="类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.type == '1'">图片</span>
+                        <span v-if="scope.row.type == '2'">视频</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="是否显示">
+                    <template slot-scope="scope">
+                        <el-switch v-model="scope.row.isShow" disabled></el-switch>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="openDetailTable(scope.row)">详情</el-button>
+                        <el-button type="primary" size="mini" @click="openDetailTable(scope.row.id)">详情</el-button>
                         <el-button type="primary" size="mini" @click="openDelet(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -58,75 +81,40 @@
         </div>
         <!-- 弹窗 -->
         <!-- 添加 -->
-        <el-dialog center title="添加" :visible.sync="addDialogVisible" :close-on-click-modal="false" width="754px">
-            <!-- 上传图片 -->
-            <div class="addImg-block">
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB</div>
-                <el-upload
-                    :action="apiBaseUrl + 'Admin/Uploads/upload'"
-                    name="images"
-                    list-type="picture-card"
-                    :on-change="addImageChange"
-                    :on-preview="addImagePreview"
-                    :on-remove="addImageRemove"
-                    :file-list="addImgFileDataList"
-                    :on-success="addImageSuccess"
-                    :on-error="addImageFail"
-                    multiple>
-                    <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="dialogImageDetailVisible">
-                    <img width="100%" :src="dialogImageDetailUrl" alt="">
-                </el-dialog>
-                <div v-show="addMsg" class="el-form-item__error">{{addMsg}}</div>
-            </div>
-            <!-- <div>
-                <label class="add-right-label">分组</label>
-                <el-select size="small" v-model="addForm.groupId" placeholder="请选择">
-                    <el-option
-                        v-for="imgCate in imgCates"
-                        :key="imgCate.id"
-                        :label="imgCate.name"
-                        :value="imgCate.id">
-                    </el-option>
-                </el-select>
-                <el-button style="margin-left: 10px;" size="small" type="primary" @click="initImgGroups()">修 改</el-button>
-            </div> -->
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="addDialogVisible = false;getTableData()">关 闭</el-button>
-            </div>
-        </el-dialog>
-        <!-- 编辑 -->
-        <el-dialog title="编辑" :visible.sync="editDialogVisible" :close-on-click-modal="false">
+        <el-dialog :title="addDialogTitle" :visible.sync="addDialogVisible" :close-on-click-modal="false" width="780px">
             <el-form :model="addForm">
-                <el-form-item label="名称" :label-width="addDialogLabelWidth">
-                    <el-input v-model="editForm.name" autocomplete="off" :disabled="!isEditing"></el-input>
+                <el-form-item v-for="dataDemo in showInAddDialogDemo" :key="dataDemo.name"
+                    :label="dataDemo.tableTitleName" :label-width="addDialogLabelWidth">
+                    <el-input v-model="addForm[dataDemo.name]" autocomplete="off" :disabled="!isEditing"></el-input>
                 </el-form-item>
-                <el-form-item label="分组" :label-width="addDialogLabelWidth">
-                    <el-select v-model="editForm.groupId" placeholder="请选择" :disabled="!isEditing">
-                        <el-option
-                            v-for="imgCate in imgCates"
-                            :key="imgCate.id"
-                            :label="imgCate.name"
-                            :value="imgCate.id">
-                        </el-option>
+                <el-form-item label="是否显示" :label-width="addDialogLabelWidth">
+                    <el-switch v-model="addForm.isShow" :disabled="!isEditing"></el-switch>
+                </el-form-item>
+                <el-form-item label="类型" :label-width="addDialogLabelWidth">
+                    <el-select v-model="addForm.type" placeholder="请选择" :disabled="!isEditing">
+                        <el-option label="图片" value="1"></el-option>
+                        <el-option label="视频" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="图片" :label-width="addDialogLabelWidth">
-                    <el-image
-                        style="width: 200px; height: 200px"
-                        :src="editForm.url"
-                        fit="contain"
-                        :preview-src-list="[editForm]">
-                    </el-image>
+                    <el-upload ref="upload"
+                      class="avatar-uploader"
+                      :action="apiBaseUrl + 'Admin/Uploads/upload'"
+                      name="file"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :before-upload="beforeAvatarUpload">
+                      <img v-if="addForm.image" :src="apiBaseUrl + addForm.image" class="avatar">
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
                 </el-form-item>
                 <el-form-item>
-                    <div v-show="editMsg" class="el-form-item__error">{{editMsg}}</div>
+                    <div v-show="addMsg" class="el-form-item__error">{{addMsg}}</div>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="editDialogVisible = false">取 消</el-button>
-                <el-button v-if="isEditing" type="primary" @click="editTableData()">确 定</el-button>
+                <el-button @click="addDialogVisible = false">取 消</el-button>
+                <el-button v-if="isEditing" type="primary" @click="addTableData()">确 定</el-button>
                 <el-button v-if="!isEditing" type="primary" @click="changeEditStatus(true)">编 辑</el-button>
             </div>
         </el-dialog>
@@ -134,124 +122,189 @@
 </template>
 <script>
     import {
-        getImageData,
-        addImageCate,
-        editImageCate,
-        deletImageCate,
-        // getImgCateData,
-    } from '../../service/getData'
-    import {
         getToken
     } from '../../config/mUtils'
     import {
         apiBaseUrl
     } from '../../config/env'
+    import {
+        getImageData,
+        addImageCate,
+        getImageDetail,
+        deletImageCate,
+    } from '@/service/getData'
+    import {
+        reflashAddForm
+    } from '@/config/mUtils'
 
     let getTableDataService = getImageData,
-        getDetailService = null,
+        getDetailService = getImageDetail,
         addService = addImageCate,
-        editService = editImageCate,
+        editService = addImageCate,
         deletService = deletImageCate;
-    let tableDataDemo = [
-        {
-            name:'id',
-            tableTitleName:'id',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
+    let tableDataDemo = [{
+            name: 'id',
+            tableTitleName: 'id',
+            isShowInTable: false,
+            isShowInAddDialog: false,
+            isShowInEditDislog: false,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
         },
         {
-            name:'name',
-            tableTitleName:'名称',
-            isShowInTable:true,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
+            name: 'title',
+            tableTitleName: '标题',
+            isShowInTable: true,
+            isShowInAddDialog: true,
+            isShowInEditDislog: true,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
         },
         {
-            name:'groupName',
-            tableTitleName:'分组',
-            isShowInTable:true,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
+            name: 'image',
+            tableTitleName: '图片地址',
+            isShowInTable: false,
+            isShowInAddDialog: false,
+            isShowInEditDislog: false,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
         },
         {
-            name:'groupId',
-            tableTitleName:'分组',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
+            name: 'url',
+            tableTitleName: '跳转地址',
+            isShowInTable: true,
+            isShowInAddDialog: true,
+            isShowInEditDislog: true,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
         },
         {
-            name:'url',
-            tableTitleName:'图片',
-            isShowInTable:false,
-            isShowInAddDialog:false,
-            isShowInEditDislog:false,
-            isShowSearch:false,
-            dataType:'string',
-            defaultData:'',
+            name: 'status',
+            tableTitleName: '状态',
+            isShowInTable: false,
+            isShowInAddDialog: false,
+            isShowInEditDislog: false,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '1',
+        },
+        {
+            name: 'sort',
+            tableTitleName: '排序',
+            isShowInTable: true,
+            isShowInAddDialog: true,
+            isShowInEditDislog: true,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
+        },
+        {
+            name: 'desc',
+            tableTitleName: '描述',
+            isShowInTable: true,
+            isShowInAddDialog: true,
+            isShowInEditDislog: true,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: '',
+        },
+        {
+            name: 'type',
+            tableTitleName: '类型',
+            isShowInTable: false,
+            isShowInAddDialog: false,
+            isShowInEditDislog: false,
+            isShowSearch: false,
+            dataType: 'string',
+            defaultData: "1",
         },
     ]
 
 
     export default {
         name: 'images',
+        components:{
+        },
         data() {
             return {
                 tableData: [], //表格数据
                 currentPage: 0, //当前页数
                 totalData: 0, //总条数
                 pageSize: 10, //每页条数
-                isEditing:false,//是否正在编辑
+                isEditing: false, //是否正在编辑
                 addDialogVisible: false, //添加弹窗是否可见
-                editDialogVisible: false,
                 addDialogLabelWidth: '120px',
-                searchForm:{
-                    groupId:'',
-                    keyword:'',
+                addDialogTitle: '添加',
+                searchForm: {
+                    status:''
                 },
                 addForm: {
                     id: '',
-                    groupId: '',
-                },
-                editForm: {
-                    id: '',
-                    name: '',
-                    groupId: '',
+                    image: '',
                     url: '',
+                    title: '',
+                    status: '',
+                    sort: '',
+                    add_time: '',
+                    edit_time: '',
+                    desc: '',
+                    type: '',
                 },
                 addMsg: '', //添加弹窗的提示
-                editMsg: '', //编辑弹窗的提示
-                tableDataDemo: tableDataDemo,//数据格式
-
-                imgCates: [],//分组列表
-                addImgFileDataList:[],//要上传的图片的数据列表
+                tableDataDemo: tableDataDemo, //数据格式
                 apiBaseUrl: apiBaseUrl,
-                dialogImageDetailUrl: '',//图片详情
-                dialogImageDetailVisible: false,//图片详情
+                
+
+                productCateData:[],//分类列表
             }
         },
         computed: {
+            /**上传图片的头部 */
+            // upImageHade: function () {
+            //     let token = getToken()
+            //     let re = {
+            //         authorization: 'Bearer ' + token.access_token
+            //     }
+            //     return re;
+            // },
             showInTableDemo: function () {
-                return this.tableDataDemo.filter(demo => {return demo.isShowInTable});
+                return this.tableDataDemo.filter(demo => {
+                    return demo.isShowInTable
+                });
             },
             showInAddDialogDemo: function () {
-                return this.tableDataDemo.filter(demo => {return demo.isShowInAddDialog});
+                return this.tableDataDemo.filter(demo => {
+                    return demo.isShowInAddDialog
+                });
             },
             showInSearchDemo: function () {
-                return this.tableDataDemo.filter(demo => {return demo.isShowSearch});
+                return this.tableDataDemo.filter(demo => {
+                    return demo.isShowSearch
+                });
+            },
+            showSearchApproval: {
+                get: function () {
+                    return this.searchForm.approval === '' ? 'all' : this.searchForm.approval;
+                },
+                set: function (val) {
+                    this.searchForm.approval = (val === 'all') ? '' : val;
+                }
+            },
+            selectCategoryId:{
+                get: function(){
+                    return (this.addForm.category.id ? this.addForm.category.id : '');
+                },
+                set: function(val){
+                    for(let i in this.productCateData){
+                        if(this.productCateData[i].id === val){
+                            this.addForm.category = this.productCateData[i]
+                        }
+                    }
+                }
             },
         },
         methods: {
@@ -261,117 +314,102 @@
                     page: this.currentPage,
                     size: this.pageSize,
                 }
-                // for(let i in this.searchForm){
-                //     pagePer[i] = this.searchForm[i];
-                // }
+                for (let i in this.searchForm) {
+                    pagePer[i] = this.searchForm[i];
+                }
                 getTableDataService(pagePer).then(res => {
-                    this.tableData = res.content;
-                    this.totalData = res.totalElements;
+                    for(let i in res.data.list){
+                        if(res.data.list[i].status == "1"){
+                            res.data.list[i].isShow = true;
+                        }else{
+                            res.data.list[i].isShow = false
+                        }
+                    }
+                    this.tableData = res.data.list;
+                    this.totalData = Number(res.data.total);
                     // this.pageSize = res.size;
                     // this.currentPage = res.page;
                 })
             },
-            /**
-             * 图片选择的实际已经上传了，此函数用于把上传了的图片跟新分组数据
-             * 此函数实际操作是修改图片信息
-             */
-            initImgGroups() {
-                let images = [];
-                // 如果没填组别 则报错
-                if(!this.addForm.groupId){
-                    this.addMsg = '请选择分组！';
-                    return;
+            /**添加 */
+            addTableData() {
+                if(!this.addForm.title){
+                    this.addMsg = "标题不能为空！"
+                    return
                 }
-                // 如果没上传图片
-                if(this.addImgFileDataList.length <= 0){
-                    this.addMsg = '请先上传图片！';
-                    return;
+                if(!this.addForm.image){
+                    this.addMsg = "请上传图片"
+                    return
                 }
-                for(let i in this.addImgFileDataList){
-                    if(this.addImgFileDataList[i].status === 'success' && this.addImgFileDataList[i].response){
-                        images.push({
-                            id:this.addImgFileDataList[i].response[0].id,
-                            name:this.addImgFileDataList[i].response[0].name,
-                            groupId:this.addForm.groupId,
-                        })
-                    }
-                }
-                editService(images).then(res => {
-                    this.$message.success('添加成功');
+                this.addForm.status = this.addForm.isShow ? '1' : '2';
+                addService(this.addForm).then(res => {
                     this.addMsg = '';
-                }).catch(err => {
-                    let ids = [];
-                    for(let imagesI in images){
-                        ids.push(images[imagesI].id)
-                    }
-                    deletService(ids);
-                })
-            },
-            /**编辑图片 */
-            editTableData(){
-                editService([this.editForm]).then(res => {
-                    this.editMsg = '';
-                    this.editDialogVisible = false;
+                    this.addDialogVisible = false;
                     this.getTableData();
                 }).catch((err) => {
                     // 请求成功发出，服务器响应的状态码不在2xx范围内
                     if (err.response) {
-                        this.editMsg = err.response.data.error_description;
+                        this.addMsg = err.response.data.error_description;
                     } else {
-                        this.editMsg = err.message;
+                        this.addMsg = err.message;
                     }
                 })
             },
-            /**取消添加图片
-             * 图片选择的实际已经上传了，此函数要把已经上传了的图片删除
-             */
             /**添加-打开弹窗 */
             openAddTable() {
-                this.addForm = {
-                    id: '',
-                    groupId: '',
-                }
-                this.addImgFileDataList = [];
-                // getImgCateData().then((res) => {
-                //     this.imgCates = res;
-                // })
+                this.addForm = reflashAddForm(this.tableDataDemo);
+                this.addForm.isShow = true;
                 this.addMsg = '';
+                this.addDialogTitle = '添加';
                 this.addDialogVisible = true;
                 this.changeEditStatus(true);
             },
             /**详情-打开弹窗 */
-            openDetailTable(image) {
-                this.editForm = image;
-                // getImgCateData().then((res) => {
-                //     this.imgCates = res;
-                // })
-                this.editMsg = '';
-                this.editDialogVisible = true;
+            openDetailTable(id) {
+                getDetailService(id).then(res => {
+                    if(res.data.status == "1"){
+                        res.data.isShow = true;
+                    }else{
+                        res.data.isShow = false
+                    }
+                    this.addForm = res.data;
+                })
+                this.addMsg = '';
+                this.addDialogTitle = '详情';
+                this.addDialogVisible = true;
                 this.changeEditStatus(false);
             },
             /**详情-改变编辑状态,true:可编辑状态,flase:不可编辑状态 */
-            changeEditStatus(flag){
+            changeEditStatus(flag) {
                 this.isEditing = flag;
             },
             /**删除 */
             openDelet(id) {
+                let imgId = '';
+                for(let i in this.tableData){
+                    if(this.tableData[i].id === id){
+                        imgId === this.tableData[i].image.id
+                    }
+                }
                 this.$confirm('此操作将永久删除该内容, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    deletService([id]).then(res => {
+                    deletService(id).then(res => {
+                        // deleteImage(imgId)
                         this.$message({
                             type: 'success',
                             message: '删除成功!'
                         });
                         this.getTableData();
                     }).catch((err) => {
-                        let msg = err.response.data.error == '40001' ? '删除失败，存在引用该分类的商品，请先把对应商品删除！' : '删除失败!';
+                        let msg = err.response.data.error == '40001' ? '删除失败，存在引用该分类的商品，请先把对应商品删除！' :
+                            '删除失败!';
                         this.$message({
                             type: 'error',
                             message: msg,
-                            duration:4000,
+                            duration: 4000,
                         });
                     })
                 }).catch(() => {
@@ -391,44 +429,80 @@
                 this.currentPage = val - 1;
                 this.getTableData()
             },
-            
-            /**上传图片 */
-            addImageRemove(file, fileList) {
-              this.addImgFileDataList = fileList;
+
+            /**改变显示状态 */
+            changeApproval(id,val,index) {
+                this.$confirm('此操作确定要修改显示状态?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    editProjectApproval({
+                        id:id,
+                        approval:val,
+                    }).then(() => {
+                        this.getTableData();
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                    }).catch((err) => {
+                        this.$message({
+                            type: 'error',
+                            message: '修改失败!'
+                        });
+                    })
+                }).catch((action) => {
+                    this.tableData[index].approval = !val;
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
-            addImageChange(file, fileList) {
-              this.addImgFileDataList = fileList;
+            handleAvatarSuccess(res, file) {
+                console.log(res);
+                if(res.code != '200'){
+                    this.$message.error(res.msg?res.msg:'上传失败');
+                }
+                this.addForm.image = res.data.url;
             },
-            addImagePreview(file, fileList){
-                this.dialogImageDetailUrl = file.url;
-                this.dialogImageDetailVisible = true;
-            }
-            
+            beforeAvatarUpload(file) {
+              const isLt2M = file.size / 1024 / 1024 < 1;
+
+              if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 1MB!');
+              }
+              return isLt2M;
+            },
         },
         beforeMount: function () {
             this.getTableData();
-            // getImgCateData().then((res) => {
-            //     this.imgCates = res;
-            // })
         }
     }
 </script>
 <style>
-.addImg-block {
-    padding: 10px;
-    border: 1px solid #eee;
-    height: 310px;
-    overflow: auto;
-    margin-bottom: 20px;
-}
-.add-right-label {
-    margin-bottom: 6px;
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+    .avatar-uploader-icon {
+        font-size: 52px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px!important;
+        text-align: center;
+    }
+  .avatar {
+    width: 178px;
+    height: 178px;
     display: block;
-}
-.img-table-url {
-    margin: 0;
-    font-size: 12px;
-    line-height: 14px;
-    color: #c3c3c3;
-}
+  }
 </style>

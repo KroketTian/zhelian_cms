@@ -37,12 +37,12 @@
                 <el-form-item v-for="dataDemo in showInAddDialogDemo" :key="dataDemo.name" :label="dataDemo.tableTitleName" :label-width="addDialogLabelWidth">
                     <el-input v-model="addForm[dataDemo.name]" autocomplete="off" :disabled="!isEditing"></el-input>
                 </el-form-item>
-                <el-form-item v-if="addDialogTitle!=='添加'" label="添加时间" :label-width="addDialogLabelWidth">
+                <!-- <el-form-item v-if="addDialogTitle!=='添加'" label="添加时间" :label-width="addDialogLabelWidth">
                     <el-input v-model="addForm.add_time" disabled></el-input>
                 </el-form-item>
                 <el-form-item v-if="addDialogTitle!=='添加'" label="最新编辑时间" :label-width="addDialogLabelWidth">
                     <el-input v-model="addForm.edit_time" disabled></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- <el-form-item label="权限列表" :label-width="addDialogLabelWidth">
                     <el-tree
                         :data="permissions" 
@@ -202,6 +202,10 @@
             },
             /**添加 */
             addTableData() {
+                if(!this.addForm.name){
+                    this.addMsg = '请填写完整的部门名'
+                    return
+                }
                 addService(this.addForm).then(res => {
                     this.addMsg = '';
                     this.addDialogVisible = false;
