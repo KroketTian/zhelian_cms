@@ -46,6 +46,7 @@
                             <el-checkbox label="cms_branch_type" disabled>网点分类</el-checkbox>
                             <el-checkbox label="cms_branch" disabled>网点管理</el-checkbox>
                             <el-checkbox label="driver" disabled>司机</el-checkbox>
+                            <el-checkbox label="driver_loca" disabled>司机打卡</el-checkbox>
                         </el-checkbox-group>
                     </template>
                 </el-table-column>
@@ -102,6 +103,7 @@
                         <el-checkbox :disabled="!isEditing" label="cms_branch_type">网点分类</el-checkbox>
                         <el-checkbox :disabled="!isEditing" label="cms_branch">网点管理</el-checkbox>
                         <el-checkbox :disabled="!isEditing" label="driver">司机</el-checkbox>
+                        <el-checkbox :disabled="!isEditing" label="driver_loca">司机打卡</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <!-- <el-form-item label="企业" :label-width="addDialogLabelWidth">
@@ -328,7 +330,6 @@
             /**添加 */
             addTableData() {
                 // 校验
-                console.log(this.addForm)
                 if(this.addForm.username.length < 6 || this.addForm.username.length > 18){
                     this.addMsg = '请输入6-18位的账号名！';
                     return

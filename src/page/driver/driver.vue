@@ -102,7 +102,7 @@
         {
             name:'nickname',
             tableTitleName:'昵称',
-            isShowInTable:true,
+            isShowInTable:false,
             isShowInAddDialog:false,
             isShowInEditDislog:false,
             isShowSearch:false,

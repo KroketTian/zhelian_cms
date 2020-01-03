@@ -2,18 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/page/login/login'
 import control from '@/components/control/control'
-import permissions from '@/page/permissions/permissions'
 import role from '@/page/role/role'
 import user from '@/page/user/user'
-import productCate from '@/page/productCate/productCate'
-import product from '@/page/product/product'
-import company from '@/page/company/company'
-import personCompany from '@/page/person_company/person_company'
 import faq from '@/page/faq/faq'
-import imgCate from '@/page/imgCate/imgCate'
-import projects from '@/page/projects/projects'
 import images from '@/page/images/images'
-import messages from '@/page/messages/messages'
 import controlIndex from '@/page/control_index/control_index'
 import descript from '@/page/descript/descript'
 import branch_type from '@/page/branch_type/branch_type'
@@ -93,66 +85,6 @@ export default new Router({
                     path: 'driver_loca',
                     name: 'driver_loca',
                     component: driver_loca,
-                },
-                // {
-                //     path: 'permissions',
-                //     name: 'permissions',
-                //     component: permissions,
-                // },
-                // {
-                //     path: 'role',
-                //     name: 'role',
-                //     component: role,
-                // },
-                // {
-                //     path: 'user',
-                //     name: 'user',
-                //     component: user,
-                // },
-                // {
-                //     path: 'productCate',
-                //     name: 'productCate',
-                //     component: productCate,
-                // },
-                // {
-                //     path: 'product',
-                //     name: 'product',
-                //     component: product,
-                // },
-                // {
-                //     path: 'company',
-                //     name: 'company',
-                //     component: company,
-                // },
-                // {
-                //     path: 'personCompany',
-                //     name: 'personCompany',
-                //     component: personCompany,
-                // },
-                // {
-                //     path: 'faq',
-                //     name: 'faq',
-                //     component: faq,
-                // },
-                // {
-                //     path: 'imgCate',
-                //     name: 'imgCate',
-                //     component: imgCate,
-                // },
-                // {
-                //     path: 'projects',
-                //     name: 'projects',
-                //     component: projects,
-                // },
-                // {
-                //     path: 'images',
-                //     name: 'images',
-                //     component: images,
-                // },
-                {
-                    path: 'messages',
-                    name: 'messages',
-                    component: messages,
                 },
             ]
         }

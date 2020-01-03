@@ -7,5 +7,5 @@ module.exports = {
     //     }
     // }
     outputDir: process.env.VUE_APP_TITLE === 'prod' ? 'prod' : (process.env.VUE_APP_TITLE === 'test') ? 'test' : 'dist',
-    publicPath: process.env.NODE_ENV === 'production'? '/' : '/',
+    publicPath: process.env.NODE_ENV === 'production'? '/Public/' : '/',
 }

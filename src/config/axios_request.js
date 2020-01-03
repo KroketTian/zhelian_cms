@@ -78,7 +78,6 @@ var errorMsg = [
 ]
 // 处理出错
 function setErrorData(error){
-    // console.log(error)
     // loadingInstance.close();
     // /**令牌无效 */
     // /**令牌过期 */
@@ -101,7 +100,7 @@ function setErrorData(error){
     // if(error.response.status === 500){
     //     Message.error('系统错误，请联系管理员');
     // }
-    let rep = /\#\/login/;
+    let rep = /#\/login/;
     let isLoginPage = rep.test(window.location.href);
     if(error.code === 4001 && !isLoginPage){
         logoutFun();

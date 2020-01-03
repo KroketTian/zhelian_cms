@@ -17,7 +17,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button size="mini" type="warning" @click="login('ruleForm')">提交</el-button>
-                    <el-button size="mini" type="warning" @click="getAdData()">测试</el-button>
+                    <!-- <el-button size="mini" type="warning" @click="getAdData()">测试</el-button> -->
                 </el-form-item>
                 <el-form-item>
                     <div v-show="loginMsg" class="el-form-item__error">{{loginMsg}}</div>
@@ -78,10 +78,8 @@
                             this.loginMsg = '登录成功';
                             // setToken(res)
                             setCookie('userId',res.data.user_id)
-                            console.log(res)
                             this.$router.replace({ name: 'control'})
                         }).catch((err) => {
-                            console.log(err)
                             // 请求成功发出，服务器响应的状态码不在2xx范围内
                             if (err.response) {
                                 this.loginMsg = err.response.data.error_description;

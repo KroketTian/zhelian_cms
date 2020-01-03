@@ -41,9 +41,14 @@
         </div>
         <div class="content-block">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column label="图片" width="150">
+                <el-table-column label="图片/视频" width="150">
                     <template slot-scope="scope" v-if="scope.row.image">
-                        <el-image
+                        <video v-if="scope.row.type == '2'" 
+                            :src="apiBaseUrl + scope.row.image" 
+                            fit="contain" 
+                            style="width: 130px; height: 130px">
+                        </video>
+                        <el-image v-if="scope.row.type == '1'" 
                             style="width: 130px; height: 130px"
                             :src="apiBaseUrl + scope.row.image"
                             fit="contain">
@@ -74,7 +79,7 @@
             </el-table>
             <div class="pagination-bar">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                    :current-page="currentPage+1" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize"
+                    :current-page="currentPage+1" :page-sizes="[2,5, 10, 50, 100]" :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper" :total="totalData">
                 </el-pagination>
             </div>
@@ -96,15 +101,31 @@
                         <el-option label="视频" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="图片" :label-width="addDialogLabelWidth">
+                <el-form-item label="图片" v-if="addForm.type == '1'" :label-width="addDialogLabelWidth">
                     <el-upload ref="upload"
                       class="avatar-uploader"
                       :action="apiBaseUrl + 'Admin/Uploads/upload'"
                       name="file"
+                      accept="image/png,image/gif,image/jpeg"
                       :show-file-list="false"
                       :on-success="handleAvatarSuccess"
+                      :on-error="handleAvatarError"
                       :before-upload="beforeAvatarUpload">
                       <img v-if="addForm.image" :src="apiBaseUrl + addForm.image" class="avatar">
+                      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item label="视频" v-if="addForm.type == '2'" :label-width="addDialogLabelWidth">
+                    <el-upload ref="upload"
+                      class="avatar-uploader"
+                      :action="apiBaseUrl + 'Admin/Uploads/upload'"
+                      name="file"
+                      accept="audio/mp4, video/mp4"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :on-error="handleAvatarError"
+                      :before-upload="beforeAvatarUpload">
+                      <video v-if="addForm.image" :src="apiBaseUrl + addForm.image" class="video" style="width:178px"></video>
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
@@ -136,6 +157,9 @@
     import {
         reflashAddForm
     } from '@/config/mUtils'
+    import {
+        Loading
+    } from 'element-ui';
 
     let getTableDataService = getImageData,
         getDetailService = getImageDetail,
@@ -257,7 +281,7 @@
                 addMsg: '', //添加弹窗的提示
                 tableDataDemo: tableDataDemo, //数据格式
                 apiBaseUrl: apiBaseUrl,
-                
+                loadingInstance:null,//加载中提示
 
                 productCateData:[],//分类列表
             }
@@ -431,49 +455,54 @@
             },
 
             /**改变显示状态 */
-            changeApproval(id,val,index) {
-                this.$confirm('此操作确定要修改显示状态?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    editProjectApproval({
-                        id:id,
-                        approval:val,
-                    }).then(() => {
-                        this.getTableData();
-                        this.$message({
-                            type: 'success',
-                            message: '修改成功!'
-                        });
-                    }).catch((err) => {
-                        this.$message({
-                            type: 'error',
-                            message: '修改失败!'
-                        });
-                    })
-                }).catch((action) => {
-                    this.tableData[index].approval = !val;
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-            },
+            // changeApproval(id,val,index) {
+            //     this.$confirm('此操作确定要修改显示状态?', '提示', {
+            //         confirmButtonText: '确定',
+            //         cancelButtonText: '取消',
+            //         type: 'warning'
+            //     }).then(() => {
+            //         editProjectApproval({
+            //             id:id,
+            //             approval:val,
+            //         }).then(() => {
+            //             this.getTableData();
+            //             this.$message({
+            //                 type: 'success',
+            //                 message: '修改成功!'
+            //             });
+            //         }).catch((err) => {
+            //             this.$message({
+            //                 type: 'error',
+            //                 message: '修改失败!'
+            //             });
+            //         })
+            //     }).catch((action) => {
+            //         this.tableData[index].approval = !val;
+            //         this.$message({
+            //             type: 'info',
+            //             message: '已取消删除'
+            //         });
+            //     });
+            // },
             handleAvatarSuccess(res, file) {
-                console.log(res);
+                this.loadingInstance.close();
                 if(res.code != '200'){
                     this.$message.error(res.msg?res.msg:'上传失败');
                 }
                 this.addForm.image = res.data.url;
             },
+            handleAvatarError(){
+                this.loadingInstance.close();
+                this.$message.error('上传失败');
+            },
             beforeAvatarUpload(file) {
-              const isLt2M = file.size / 1024 / 1024 < 1;
+                this.loadingInstance = Loading.service({ fullscreen: true });
+            //   const isLt2M = file.size / 1024 / 1024 < 1;
 
-              if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 1MB!');
-              }
-              return isLt2M;
+            //   if (!isLt2M) {
+            //     this.$message.error('上传头像图片大小不能超过 1MB!');
+            //   }
+            //   return isLt2M;
             },
         },
         beforeMount: function () {

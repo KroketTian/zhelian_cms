@@ -236,7 +236,7 @@ export const animate = (element, target, duration = 400, mode = 'ease-out', call
                     intervalTime = duration * 20 / 400;
                     break;
                 case 'ease-in':
-                    let oldspeed = remberSpeed[attr] || 0;
+                    var oldspeed = remberSpeed[attr] || 0;
                     iSpeed = oldspeed + (target[attr] - initState[attr]) / duration;
                     remberSpeed[attr] = iSpeed
                     break;
@@ -310,7 +310,6 @@ export const delCookie = (name) => {
     exp.setTime(exp.getTime() - 1);
     var cval = getCookie(name);
     if (cval != null)
-    console.log(cval)
         document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
 }
 // 退出登录

@@ -17,7 +17,7 @@ if (process.env.NODE_ENV == 'development') {
     imgBaseUrl = '/img/';
 
 }else if(process.env.NODE_ENV == 'production'){
-	apiBaseUrl = process.env.VUE_APP_API_HOST + '/cms';
+	apiBaseUrl = process.env.VUE_APP_API_HOST + '';
     imgBaseUrl = '//elm.cangdu.org/img/';
 }else{
 	apiBaseUrl = 'http://order.50niu.com/';

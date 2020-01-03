@@ -506,7 +506,7 @@ export const getImageData = (pagePer) => {
         par = {
             // keyword:pagePer.keyword,
             status:pagePer.status,
-            page:pagePer.page,
+            page:pagePer.page+1,
             pagesize:pagePer.size,
         }
     }else{
