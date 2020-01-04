@@ -1,9 +1,10 @@
 .login {
     width: 100vw;
     height: 100vh;
-    background: #101010;
+    background: #060c40 url('../../assets/login_bg.jpg') no-repeat fixed center/cover;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+
 }
 .header {
     line-height: 60px;
@@ -23,6 +24,7 @@
     margin: auto;
     margin-top: 200px;
     color: #fff;
+    background: url('../../assets/login_block.png') no-repeat fixed center/cover;
 }
 .login-form .el-form-item__label{
     color:#fff;

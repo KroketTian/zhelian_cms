@@ -1,11 +1,11 @@
 <template>
     <div class="login">
         <div class="header">
-            <!-- <div class="logo">浙联-CMS</div> -->
+            <!-- <div class="logo">浙联物流-后台管理系统</div> -->
         </div>
         <div class="login-form">
             <div class="logo">
-                <span>TIN-CMS</span>
+                <span>浙联物流-后台管理系统</span>
             </div>
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="50px"
                 class="demo-ruleForm">
