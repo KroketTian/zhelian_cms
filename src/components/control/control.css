@@ -1,15 +1,26 @@
 .head-logo {
   display: inline-block;
   font-size: 20px;
-  color: #909399;
+  color: #ffffff;
   font-weight: 900;
+  width: 225px;
+  background: #31478f;
+  text-align: center;
+  border-bottom: 1px solid #4159a8;
+  position: absolute;
+  left: -225px;
 }
 .el-header{
-    background-color:#222;
-    color: #fff;
-    line-height: 50px;
-    height: 50px;
-    z-index: 100;
+  background-color: #ffffff;
+  color: #fff;
+  line-height: 50px;
+  height: 50px;
+  z-index: 100;
+  border-bottom: 1px solid #dbe9ef;
+  box-shadow: 0px 0px 10px 0px #eee;
+  position: relative;
+  /* left: 225px; */
+  margin-left: 225px;
   }
 .el-footer {
     background-color: #e9eef3;
@@ -20,15 +31,21 @@
   }
   
   .el-aside {
-    background-color: #222222;
+    background-color: #31478f;
   }
   .el-menu-item.is-active{
     color: rgb(255, 208, 75);
-    background-color: #080808!important;
+    background-color: #46a8f4!important;
   }
   .el-menu-item, .el-submenu__title {
     height: 50px;
     line-height: 50px;
+}
+.el-menu-item i ,.el-submenu__title i{
+  color: #7c93c1!important;
+}
+.el-menu-item.is-active i,.el-submenu__title.is-active i{
+  color: #fff!important;
 }
   
   .el-main {
@@ -73,7 +90,6 @@
 .el-dropdown,.head-right {
   height: 50px;
 }
-
 
 /******************页面里面的统一样式**********************/
 .page-title {

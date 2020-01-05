@@ -91,8 +91,28 @@
             defaultData:'',
         },
         {
+            name:'title',
+            tableTitleName:'网点名',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
             name:'cid',
             tableTitleName:'分类id',
+            isShowInTable:false,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:true,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
+            name:'category',
+            tableTitleName:'分类名',
             isShowInTable:true,
             isShowInAddDialog:false,
             isShowInEditDislog:false,
@@ -238,6 +258,10 @@
                 }
                 if(!this.addForm.phone){
                     this.addMsg = '请填写负责人手机';
+                    return
+                }
+                if(!this.addForm.title){
+                    this.addMsg = '请填写网点名';
                     return
                 }
                 addService(this.addForm).then(res => {

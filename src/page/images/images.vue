@@ -199,9 +199,9 @@
         {
             name: 'url',
             tableTitleName: '跳转地址',
-            isShowInTable: true,
-            isShowInAddDialog: true,
-            isShowInEditDislog: true,
+            isShowInTable: false,
+            isShowInAddDialog: false,
+            isShowInEditDislog: false,
             isShowSearch: false,
             dataType: 'string',
             defaultData: '',

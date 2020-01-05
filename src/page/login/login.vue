@@ -4,21 +4,27 @@
             <!-- <div class="logo">浙联物流-后台管理系统</div> -->
         </div>
         <div class="login-form">
+            <div class="jiao"></div>
+            <div class="jiao2"></div>
             <div class="logo">
                 <span>浙联物流-后台管理系统</span>
             </div>
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="50px"
                 class="demo-ruleForm">
-                <el-form-item label="账号" prop="userName">
-                    <el-input size="mini" v-model.number="ruleForm.userName"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="pass">
-                    <el-input size="mini" type="password" v-model="ruleForm.pass"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="mini" type="warning" @click="login('ruleForm')">提交</el-button>
+                <!-- <el-form-item label="" prop="userName"> -->
+                    <el-input size="s" placeholder="用户名" v-model.number="ruleForm.userName">
+                        <i slot="prefix" class="el-input__icon el-icon-s-finance"></i>
+                    </el-input>
+                <!-- </el-form-item> -->
+                <!-- <el-form-item label="" prop="pass"> -->
+                    <el-input size="s" placeholder="密码" type="password" v-model="ruleForm.pass">
+                        <i slot="prefix" class="el-input__icon el-icon-s-check"></i>
+                    </el-input>
+                <!-- </el-form-item> -->
+                <!-- <el-form-item> -->
+                    <el-button class="sub-btn" @click="login('ruleForm')">提交</el-button>
                     <!-- <el-button size="mini" type="warning" @click="getAdData()">测试</el-button> -->
-                </el-form-item>
+                <!-- </el-form-item> -->
                 <el-form-item>
                     <div v-show="loginMsg" class="el-form-item__error">{{loginMsg}}</div>
                 </el-form-item>
@@ -81,8 +87,8 @@
                             this.$router.replace({ name: 'control'})
                         }).catch((err) => {
                             // 请求成功发出，服务器响应的状态码不在2xx范围内
-                            if (err.response) {
-                                this.loginMsg = err.response.data.error_description;
+                            if (err.data) {
+                                this.loginMsg = err.data.msg ? err.data.msg : err.data.error_description;
                             } else {
                                 this.loginMsg = err.message;
                             }

@@ -188,6 +188,16 @@
             defaultData:'',
         },
         {
+            name:'group_name',
+            tableTitleName:'部门名',
+            isShowInTable:true,
+            isShowInAddDialog:false,
+            isShowInEditDislog:false,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'',
+        },
+        {
             name:'password',
             tableTitleName:'密码',
             isShowInTable:false,

@@ -868,6 +868,7 @@ export const addBranch = (msg) => {
     let data = {
         cid:msg.cid,
         name:msg.name,
+        title:msg.title,
         phone:msg.phone,
         desc:msg.desc,
         icon:msg.icon,

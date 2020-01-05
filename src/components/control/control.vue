@@ -4,7 +4,7 @@
 
             <el-header height="50px">
                 <!-- <img class="control-logo" src="../../assets/veda_logo_black.png"/> -->
-                <div class="head-logo">浙联物流-CMS</div>
+                <div class="head-logo" width="225px">浙联物流-CMS</div>
                 <div class="head-right">
                     <el-dropdown @command="userCommand">
                         <div class="user el-dropdown-link">
@@ -20,41 +20,44 @@
                 </div>
             </el-header>
             <el-container>
-            <el-aside width="225px">
-                <el-row>
-                    <el-col>
-                        <el-menu :default-active="menuActive" class="el-menu-vertical-demo" background-color="#222"
-                            text-color="#999" active-text-color="#fff">
-                            <template v-for="menu in menuList">
-                                <el-submenu v-if="!!menu.child" :key="menu.index" :index="menu.index">
-                                    <template slot="title">
-                                        <i :class="menu.icon"></i>
-                                        <span>{{menu.name}}</span>
-                                    </template>
-                                    <template v-for="secondMenu in menu.child">
-                                        <router-link v-if="secondMenu.link" :to="{ name: secondMenu.link}"
-                                            :key="secondMenu.index">
-                                            <el-menu-item :index="secondMenu.index">{{secondMenu.name}}</el-menu-item>
-                                        </router-link>
-                                        <el-menu-item v-if="!secondMenu.link" :key="secondMenu.index">
-                                            {{secondMenu.name}}</el-menu-item>
-                                    </template>
-                                </el-submenu>
-                                <router-link v-if="!menu.child && menu.link" :to="{ name: menu.link}" :key="menu.index">
-                                    <el-menu-item :index="menu.index"><i :class="menu.icon"></i>{{menu.name}}
-                                    </el-menu-item>
-                                </router-link>
-                                <el-menu-item v-if="!menu.child && !menu.link" :key="menu.index" :index="menu.index"><i
-                                        :class="menu.icon"></i>{{menu.name}}</el-menu-item>
-                            </template>
-                        </el-menu>
-                    </el-col>
-                </el-row>
-            </el-aside>
+                <el-aside width="225px">
+                    <el-row>
+                        <el-col>
+                            <el-menu :default-active="menuActive" class="el-menu-vertical-demo"
+                                background-color="#31478f" text-color="#7c93c1" active-text-color="#fff">
+                                <template v-for="menu in menuList">
+                                    <el-submenu v-if="!!menu.child" :key="menu.index" :index="menu.index">
+                                        <template slot="title">
+                                            <i :class="menu.icon"></i>
+                                            <span>{{menu.name}}</span>
+                                        </template>
+                                        <template v-for="secondMenu in menu.child">
+                                            <router-link v-if="secondMenu.link" :to="{ name: secondMenu.link}"
+                                                :key="secondMenu.index">
+                                                <el-menu-item :index="secondMenu.index">{{secondMenu.name}}
+                                                </el-menu-item>
+                                            </router-link>
+                                            <el-menu-item v-if="!secondMenu.link" :key="secondMenu.index">
+                                                {{secondMenu.name}}</el-menu-item>
+                                        </template>
+                                    </el-submenu>
+                                    <router-link v-if="!menu.child && menu.link" :to="{ name: menu.link}"
+                                        :key="menu.index">
+                                        <el-menu-item :index="menu.index"><i :class="menu.icon"></i>{{menu.name}}
+                                        </el-menu-item>
+                                    </router-link>
+                                    <el-menu-item v-if="!menu.child && !menu.link" :key="menu.index"
+                                        :index="menu.index"><i :class="menu.icon"></i>{{menu.name}}</el-menu-item>
+                                </template>
+                            </el-menu>
+                        </el-col>
+                    </el-row>
+                </el-aside>
                 <el-main>
                     <div class="page-title">
                         <el-breadcrumb separator-class="el-icon-arrow-right">
-                            <el-breadcrumb-item v-for="menuActiveName in menuActiveNames" :key="menuActiveName">{{menuActiveName}}</el-breadcrumb-item>
+                            <el-breadcrumb-item v-for="menuActiveName in menuActiveNames" :key="menuActiveName">
+                                {{menuActiveName}}</el-breadcrumb-item>
                         </el-breadcrumb>
                     </div>
                     <router-view />
@@ -67,22 +70,23 @@
 
 <script>
     import {
-        getCurrentUser,logout
+        getCurrentUser,
+        logout
     } from '../../service/getData'
     import {
         checkIsLogin,
         logoutFun
     } from '../../config/mUtils'
 
-    let checkMenuFromMenuData = (menuData,target) => {
+    let checkMenuFromMenuData = (menuData, target) => {
         let reList = [];
-        for(let menuI in menuData){
-            if(menuData[menuI].child){
-                let re = checkMenuFromMenuData(menuData[menuI].child,target);
+        for (let menuI in menuData) {
+            if (menuData[menuI].child) {
+                let re = checkMenuFromMenuData(menuData[menuI].child, target);
                 reList = reList.concat(re);
-                re.length > 0 ? reList.push(menuI):'';
+                re.length > 0 ? reList.push(menuI) : '';
             }
-            if(menuData[menuI].link === target){
+            if (menuData[menuI].link === target) {
                 reList.push(menuI)
                 return reList
             }
@@ -96,9 +100,9 @@
             return {
                 spanLeft: 5,
                 spanRight: 19,
-                menuActive:'',
-                menuActiveNames:[],
-                currentUser:null,
+                menuActive: '',
+                menuActiveNames: [],
+                currentUser: null,
                 menuList: [{
                         name: '账号管理',
                         index: '账号管理',
@@ -108,14 +112,14 @@
                             name: '部门管理',
                             index: 'role',
                             link: 'role',
-                            premission:'cms_user_group',
+                            premission: 'cms_user_group',
                         }, {
                             name: '用户管理',
                             index: 'user',
                             link: 'user',
-                            premission:'cms_user',
+                            premission: 'cms_user',
                         }, ]
-                    },{
+                    }, {
                         name: '内容管理',
                         index: '内容管理',
                         link: '',
@@ -124,35 +128,35 @@
                             name: '图片管理',
                             index: 'images',
                             link: 'images',
-                            premission:'cms_images',
+                            premission: 'cms_images',
                         }, {
                             name: '文字管理',
                             index: 'descript',
                             link: 'descript',
-                            premission:'cms_descript',
+                            premission: 'cms_descript',
                         }, {
                             name: '网点分类',
                             index: 'branch_type',
                             link: 'branch_type',
-                            premission:'cms_branch_type',
+                            premission: 'cms_branch_type',
                         }, {
                             name: '网点管理',
                             index: 'branch',
                             link: 'branch',
-                            premission:'cms_branch',
+                            premission: 'cms_branch',
                         }, ]
                     }, {
                         name: '司机',
                         index: 'driver',
                         link: 'driver',
-                        icon: 'el-icon-s-finance',
-                        premission:'driver',
+                        icon: 'el-icon-s-opportunity',
+                        premission: 'driver',
                     }, {
                         name: '打卡记录',
                         index: 'driver_loca',
                         link: 'driver_loca',
                         icon: 'el-icon-s-finance',
-                        premission:'driver_loca',
+                        premission: 'driver_loca',
                     },
 
                     //     name: '账号管理',
@@ -245,7 +249,7 @@
             logout() {
                 // deletToken();
                 logoutFun()
-                
+
             },
             userCommand(command) {
                 this[command]();
@@ -254,10 +258,12 @@
         mounted: function () {
             checkIsLogin();
             // 更新菜单样式
-            let showPageIndexList = checkMenuFromMenuData(this.menuList,this.$route.name).reverse();
-            let active = {child:this.menuList};
+            let showPageIndexList = checkMenuFromMenuData(this.menuList, this.$route.name).reverse();
+            let active = {
+                child: this.menuList
+            };
             this.menuActiveNames = [];
-            for(let menuI in showPageIndexList){
+            for (let menuI in showPageIndexList) {
                 active = active.child[showPageIndexList[menuI]]
                 this.menuActiveNames.push(active.name)
             }
@@ -268,46 +274,47 @@
                 let authList = res.data.auth ? res.data.auth.split(',') : [];
                 let newMenu = [];
                 // 根据用户权限筛选能显示的菜单
-                for(let menuI in this.menuList){
+                for (let menuI in this.menuList) {
                     // 如果有子菜单，则循环子菜单
-                    if(this.menuList[menuI].child){
+                    if (this.menuList[menuI].child) {
                         // 先把一级菜单加入列表+
-                        newMenu.push( JSON.parse(JSON.stringify(this.menuList[menuI])) );
-                        newMenu[newMenu.length-1].child = [];
+                        newMenu.push(JSON.parse(JSON.stringify(this.menuList[menuI])));
+                        newMenu[newMenu.length - 1].child = [];
 
-                        for(let secondMenuI in this.menuList[menuI].child){
+                        for (let secondMenuI in this.menuList[menuI].child) {
                             let checkMenu = this.menuList[menuI].child[secondMenuI];
                             let isShow = false;
-                            checkMenu.premission.split(' or ').forEach(function(val,i,arr){
-                                if(res.data.is_admin == '1'){
+                            checkMenu.premission.split(' or ').forEach(function (val, i, arr) {
+                                if (res.data.is_admin == '1') {
                                     isShow = true;
-                                }else{
-                                    for(let permissionI in authList){
+                                } else {
+                                    for (let permissionI in authList) {
                                         let authoritie = authList[permissionI];
-                                        if(val === authoritie){
+                                        if (val === authoritie) {
                                             isShow = true;
                                             break;
                                         }
                                     }
                                 }
                             })
-                            isShow ? newMenu[newMenu.length-1].child.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
+                            isShow ? newMenu[newMenu.length - 1].child.push(JSON.parse(JSON.stringify(
+                                checkMenu))) : '';
                         }
 
                         // 检查完子菜单后，如果子菜单为空，则把父菜单删除
-                        if(newMenu[newMenu.length-1].child.length < 1){
-                            newMenu.splice(length-1,1);
+                        if (newMenu[newMenu.length - 1].child.length < 1) {
+                            newMenu.splice(length - 1, 1);
                         }
-                    }else{ //如果无子菜单
+                    } else { //如果无子菜单
                         let checkMenu = this.menuList[menuI];
                         let isShow = false;
-                        checkMenu.premission.split(' or ').forEach(function(val,i,arr){
-                            if(res.data.is_admin == '1'){
+                        checkMenu.premission.split(' or ').forEach(function (val, i, arr) {
+                            if (res.data.is_admin == '1') {
                                 isShow = true;
-                            }else{
-                                for(let permissionI in authList){
+                            } else {
+                                for (let permissionI in authList) {
                                     let authoritie = authList[permissionI];
-                                    if(val === authoritie || res.data.is_admin == '1'){
+                                    if (val === authoritie || res.data.is_admin == '1') {
                                         isShow = true;
                                         break;
 
@@ -315,13 +322,13 @@
                                 }
                             }
                         })
-                        isShow ? newMenu.push( JSON.parse(JSON.stringify(checkMenu)) ) : '';
+                        isShow ? newMenu.push(JSON.parse(JSON.stringify(checkMenu))) : '';
                     }
                 }
                 this.menuList = newMenu;
 
             }).catch(err => {
-                if(err.data.code === 4002){
+                if (err.data.code === 4002) {
                     logoutFun()
                 }
             })
@@ -329,10 +336,12 @@
         watch: {
             $route(to, from) {
                 // 更新菜单样式
-                let showPageIndexList = checkMenuFromMenuData(this.menuList,to.name).reverse();
-                let active = {child:this.menuList};
+                let showPageIndexList = checkMenuFromMenuData(this.menuList, to.name).reverse();
+                let active = {
+                    child: this.menuList
+                };
                 this.menuActiveNames = [];
-                for(let menuI in showPageIndexList){
+                for (let menuI in showPageIndexList) {
                     active = active.child[showPageIndexList[menuI]]
                     this.menuActiveNames.push(active.name)
                 }

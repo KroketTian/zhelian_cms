@@ -13,18 +13,24 @@
     height: 60px;
 }
 .logo {
-    font-size: 20px;
-    font-weight: 900;
-    margin-left: 20px;
+    font-size: 24px;
+    font-weight: 500;
     display: inline-block;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 40px;
 }
 .login-form {
-    width: 210px;
-    padding: 24px;
+    width: 300px;
+    padding: 40px 40px 60px 40px;
     margin: auto;
     margin-top: 200px;
     color: #fff;
     background: url('../../assets/login_block.png') no-repeat fixed center/cover;
+    border: 1px solid #12255a;
+    position: absolute;
+    z-index: 1;
+    right: 18%;
 }
 .login-form .el-form-item__label{
     color:#fff;
@@ -33,15 +39,77 @@
 .el-form-item {
     margin-bottom: 0px!important;
 }
-.logo {
-    font-size: 20px;
-    font-weight: 900;
-    /* margin-left: 20px; */
-    display: inline-block;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 20px;
-}
 .el-form-item__error{
     padding-top: 0px!important;
+}
+.login-form .el-input--prefix .el-input__inner,.login-form input:-internal-autofill-selected{
+    background-color: #1b1f51;
+    border: 1px solid #172757;
+    color: #d1d2dc;
+    font-size: 16px;
+    padding-left: 52px;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 18px;
+}
+.login-form .el-input__icon{
+    font-size: 26px;
+    line-height: 50px;
+    margin: 0 8px;
+}
+.login-form .el-button{
+    background: #0098f2;
+    width: 100%;
+    border: 0;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+    box-shadow: 0px -3px 7px 0px #727ac7 inset;
+    margin-top: 26px;
+}
+.login-form .el-button:focus,.login-form .el-button:hover{
+    background: #14a0f3;
+    color: #fff;
+}
+.login-form .el-form-item__error {
+    font-size: 16px;
+}
+.jiao,.jiao2 {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+.jiao:before,.jiao:after,.jiao2:before,.jiao2:after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+}
+.jiao:before {
+    top: -2px;
+    left: -2px;
+    border-top: 4px solid #01aef4;
+    border-left: 4px solid #01aef4;
+}
+.jiao:after {
+    top: -2px;
+    right: -2px;
+    border-top: 4px solid #01aef4;
+    border-right: 4px solid #01aef4;
+}
+.jiao2:before {
+    bottom: -2px;
+    left: -2px;
+    border-bottom: 4px solid #01aef4;
+    border-left: 4px solid #01aef4;
+}
+.jiao2:after {
+    bottom: -2px;
+    right: -2px;
+    border-bottom: 4px solid #01aef4;
+    border-right: 4px solid #01aef4;
 }
