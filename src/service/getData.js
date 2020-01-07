@@ -875,6 +875,7 @@ export const addBranch = (msg) => {
         longitude:msg.longitude,
         latitude:msg.latitude,
         location:msg.location,
+        sort:msg.sort,
     }
     if(msg.id){
         data.id = msg.id;

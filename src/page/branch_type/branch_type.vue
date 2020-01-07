@@ -91,6 +91,16 @@
             defaultData:'',
         },
         {
+            name:'sort',
+            tableTitleName:'排序',
+            isShowInTable:true,
+            isShowInAddDialog:true,
+            isShowInEditDislog:true,
+            isShowSearch:false,
+            dataType:'string',
+            defaultData:'0',
+        },
+        {
             name:'icon',
             tableTitleName:'图标',
             isShowInTable:false,
@@ -177,6 +187,7 @@
                             id:obj.id,
                             parent_id:obj.parent_id,
                             title:obj.title,
+                            sort:obj.sort,
                         })
                     }
                     for(let i in obj.children){
