@@ -197,6 +197,10 @@
             },
             /**添加 */
             addTableData() {
+                if(!this.addForm.title){
+                    this.addMsg = '请填写分类名';
+                    return
+                }
                 addService(this.addForm).then(res => {
                     if(res === 0){
                         this.$message({

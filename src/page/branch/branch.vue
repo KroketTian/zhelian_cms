@@ -274,6 +274,14 @@
                     this.addMsg = '请填写网点名';
                     return
                 }
+                if(!this.addForm.location){
+                    this.addMsg = '请填写位置';
+                    return
+                }
+                if(!this.addForm.longitude || !this.addForm.latitude){
+                    this.addMsg = '请填写经纬度';
+                    return
+                }
                 addService(this.addForm).then(res => {
                     this.addMsg = '';
                     this.addDialogVisible = false;
